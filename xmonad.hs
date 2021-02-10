@@ -18,7 +18,7 @@ main = xmonad $ gnomeConfig
   { modMask = myModMask
   -- , terminal = "terminator"
   , workspaces = myWorkspaces
-  , borderWidth = 2
+  , borderWidth = 4
   -- , layoutHook = smartBorders $ spacingRaw True (Border 2 2 2 2) True (Border 2 2 2 2) True $ layoutHook gnomeConfig
   , layoutHook = smartBorders $ layoutHook gnomeConfig
   , normalBorderColor = "#777777"
@@ -32,14 +32,22 @@ main = xmonad $ gnomeConfig
   ++ [((m .|. myModMask, key), screenWorkspace sc >>= flip whenJust (windows . f)) -- Replace 'mod1Mask' with your mod key of choice.
   | (key, sc) <- zip [xK_w, xK_e, xK_r] [2,0,1] -- was [0..] *** change to match your screen order ***
   , (f, m) <- [(W.view, 0), (W.shift, shiftMask)]]
-  ++ [((myModMask, xK_g), withFocused toggleBorder)]
+  ++ [
+      ((myModMask, xK_g), withFocused toggleBorder)
+     ,((myModMask, xK_p), spawn myLauncher)
+     ,((myModMask .|. shiftMask, xK_p), gnomeRun)
+     ,((mod1Mask, xK_F2), gnomeRun)
+     ]
   )
+
+myLauncher = "$(yeganesh -x -- -fn 'MesloLGS NF-10' -b)"
 
 myModMask = mod4Mask
 
 myStartupHook = do
   startupHook gnomeConfig
   setWMName "LG3D"
+  spawn "/home/shane/bin/gnome-panel-replace.sh"
 
 myManageHook = composeAll
   [ className =? "mpv" --> doFloat
