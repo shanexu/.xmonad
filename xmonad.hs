@@ -37,6 +37,8 @@ main = xmonad $ gnomeConfig
      ,((myModMask, xK_p), spawn myLauncher)
      ,((myModMask .|. shiftMask, xK_p), gnomeRun)
      ,((mod1Mask, xK_F2), gnomeRun)
+     ,((myModMask, xK_x), spawn "gnome-screenshot -i")
+     ,((myModMask .|. shiftMask, xK_x), spawn "gnome-screenshot -a -i")
      ]
   )
 
@@ -60,12 +62,13 @@ myManageHook = composeAll
   , className =? "albert" --> doFloat
   , className =? "Synapse" --> doFloat
   , className =? "netease-cloud-music" --> doFloat
+  , className =? "Gnome-screenshot" --> doFloat
   , title =? "Run Application" --> doFloat
   , title =? "Log Out" --> doFloat
   , isFullscreen --> doFullFloat
   ]
 
-myWorkspaces = miscs 9 ++ ["0"] -- ["web", "terms", "editor"] ++ (miscs 6) ++ ["mail"]
+myWorkspaces = miscs 9 ++ ["0"]
   where miscs = map (("" ++) . show) . flip take [1..]
 
-myExtraWorkspaces = [(xK_0, "0")] -- list of (key, name)
+myExtraWorkspaces = [(xK_0, "0")]
