@@ -1,4 +1,4 @@
-# xmonad.sh
+# xmonad.hs
 
 ## compile
 
