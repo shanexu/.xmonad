@@ -19,7 +19,7 @@ main = do
   home <- getHomeDirectory
   xmonad $ gnomeConfig
     { modMask = myModMask
-    -- , terminal = "terminator"
+    , terminal = "wezterm"
     , workspaces = myWorkspaces
     , borderWidth = 2
     -- , layoutHook = smartBorders $ spacingRaw True (Border 2 2 2 2) True (Border 2 2 2 2) True $ layoutHook gnomeConfig
