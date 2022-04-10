@@ -17,7 +17,7 @@ import System.Directory
 main :: IO ()
 main = do
   home <- getHomeDirectory
-  xmonad $ gnomeConfig
+  xmonad $ ewmhFullscreen $ gnomeConfig
     { modMask = myModMask
     , terminal = "wezterm"
     , workspaces = myWorkspaces
@@ -26,7 +26,7 @@ main = do
     , layoutHook = smartBorders $ layoutHook gnomeConfig
     , normalBorderColor = "#777777"
     , focusedBorderColor = "#2980b9"
-    , handleEventHook = handleEventHook gnomeConfig <+> fullscreenEventHook
+    , handleEventHook = handleEventHook gnomeConfig
     , startupHook = myStartupHook
     , manageHook = myManageHook <+> manageHook gnomeConfig
     } `additionalKeys` (
