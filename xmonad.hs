@@ -37,7 +37,7 @@ main = do
        , (f, m) <- [(W.view, 0), (W.shift, shiftMask)]]
     ++ [
         ((myModMask, xK_g), withFocused toggleBorder)
-       ,((myModMask, xK_p), spawn ("$(" ++ home ++ "/.cabal/bin/yeganesh -x -- -fn 'MesloLGS NF-10' -b)"))
+       ,((myModMask, xK_p), spawn ("$(" ++ home ++ "/.cabal/bin/yeganesh -x -- -fn 'dina-9' -b)"))
        ,((myModMask .|. shiftMask, xK_p), gnomeRun)
        ,((mod1Mask, xK_F2), gnomeRun)
        ,((myModMask, xK_x), spawn "flameshot full -c")
@@ -49,7 +49,7 @@ main = do
        ]
     )
 
-myLauncher = "$(/home/shane/.calbal/bin/yeganesh -x -- -fn 'MesloLGS NF-10' -b)"
+myLauncher = "$(/home/shane/.calbal/bin/yeganesh -x -- -fn 'dina-9' -b)"
 
 myModMask = mod4Mask
 
