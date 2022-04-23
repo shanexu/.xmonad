@@ -1,4 +1,36 @@
 import XMonad
+    ( controlMask,
+      mod1Mask,
+      mod4Mask,
+      shiftMask,
+      xK_0,
+      xK_F2,
+      xK_backslash,
+      xK_e,
+      xK_g,
+      xK_l,
+      xK_p,
+      xK_r,
+      xK_w,
+      xK_x,
+      spawn,
+      whenJust,
+      (|||),
+      xmonad,
+      (-->),
+      (<+>),
+      (=?),
+      className,
+      composeAll,
+      doFloat,
+      title,
+      screenWorkspace,
+      windows,
+      withFocused,
+      (.|.),
+      XConfig(modMask, terminal, workspaces, borderWidth,
+              normalBorderColor, focusedBorderColor, handleEventHook, manageHook,
+              layoutHook, startupHook) )
 import XMonad.Config.Gnome
 import XMonad.Config.Desktop
 import XMonad.Hooks.DynamicLog
@@ -12,6 +44,7 @@ import XMonad.Hooks.EwmhDesktops
 import System.Environment
 import qualified XMonad.StackSet as W
 import XMonad.Actions.NoBorders
+import XMonad.Layout.ThreeColumns
 import System.Directory
 
 main :: IO ()
@@ -21,9 +54,9 @@ main = do
     { modMask = myModMask
     , terminal = "wezterm"
     , workspaces = myWorkspaces
-    , borderWidth = 2
+    , borderWidth = 4
     -- , layoutHook = smartBorders $ spacingRaw True (Border 2 2 2 2) True (Border 2 2 2 2) True $ layoutHook gnomeConfig
-    , layoutHook = smartBorders $ layoutHook gnomeConfig
+    , layoutHook = myLayout
     , normalBorderColor = "#777777"
     , focusedBorderColor = "#2980b9"
     , handleEventHook = handleEventHook gnomeConfig
@@ -37,7 +70,7 @@ main = do
        , (f, m) <- [(W.view, 0), (W.shift, shiftMask)]]
     ++ [
         ((myModMask, xK_g), withFocused toggleBorder)
-       ,((myModMask, xK_p), spawn ("$(" ++ home ++ "/.cabal/bin/yeganesh -x -- -fn 'dina-9' -b)"))
+       ,((myModMask, xK_p), spawn ("$(" ++ home ++ "/.cabal/bin/yeganesh -x -- -fn 'JetBrains Mono NL-9' -b)"))
        ,((myModMask .|. shiftMask, xK_p), gnomeRun)
        ,((mod1Mask, xK_F2), gnomeRun)
        ,((myModMask, xK_x), spawn "flameshot full -c")
@@ -48,6 +81,8 @@ main = do
        -- ,((myModMask .|. shiftMask, xK_x), spawn "gnome-screenshot -a -i")
        ]
     )
+
+myLayout = smartBorders $ layoutHook gnomeConfig ||| desktopLayoutModifiers (ThreeColMid 1 (3/100) (1/2))
 
 myLauncher = "$(/home/shane/.calbal/bin/yeganesh -x -- -fn 'dina-9' -b)"
 
