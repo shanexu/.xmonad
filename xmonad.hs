@@ -106,6 +106,7 @@ myManageHook = composeAll
   , className =? "netease-cloud-music" --> doFloat
   , className =? "Gnome-screenshot" --> doFloat
   , className =? "1Password" --> doFloat
+  , className =? "Youdao Dict" --> hasBorder False >> doFloat
   , title =? "Run Application" --> doFloat
   , title =? "Log Out" --> doFloat
   , isFullscreen --> doFullFloat
