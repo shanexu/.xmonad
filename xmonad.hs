@@ -28,9 +28,9 @@ import XMonad
       windows,
       withFocused,
       (.|.),
-      XConfig(modMask, terminal, workspaces, borderWidth,
+      XConfig(focusFollowsMouse, modMask, terminal, workspaces, borderWidth,
               normalBorderColor, focusedBorderColor, handleEventHook, manageHook,
-              layoutHook, startupHook) )
+              layoutHook, logHook, startupHook) )
 import XMonad.Config.Gnome
 import XMonad.Config.Desktop
 import XMonad.Hooks.DynamicLog
@@ -46,19 +46,25 @@ import qualified XMonad.StackSet as W
 import XMonad.Actions.NoBorders
 import XMonad.Layout.ThreeColumns
 import System.Directory
+import qualified XMonad.DBus as D
+import qualified DBus.Client as DC
 
 main :: IO ()
 main = do
-  home <- getHomeDirectory
+  -- dbus <- D.connect
+  -- D.requestAccess dbus
   xmonad $ ewmhFullscreen $ gnomeConfig
     { modMask = myModMask
+    -- , logHook = dynamicLogWithPP (myLogHook dbus)
     , terminal = "wezterm"
     , workspaces = myWorkspaces
     , borderWidth = 4
-    -- , layoutHook = smartBorders $ spacingRaw True (Border 2 2 2 2) True (Border 2 2 2 2) True $ layoutHook gnomeConfig
-    , layoutHook = myLayout
-    , normalBorderColor = "#777777"
-    , focusedBorderColor = "#2980b9"
+    , focusFollowsMouse = True
+    , layoutHook = spacingRaw True (Border 0 0 0 0) False (Border 6 6 6 6) True myLayout
+    , normalBorderColor = "#707880"
+    -- , focusedBorderColor = "#2980b9"
+    , focusedBorderColor = "#33AADD"
+    -- , focusedBorderColor = "#A54242"
     , handleEventHook = handleEventHook gnomeConfig
     , startupHook = myStartupHook
     , manageHook = myManageHook <+> manageHook gnomeConfig
@@ -70,9 +76,9 @@ main = do
        , (f, m) <- [(W.view, 0), (W.shift, shiftMask)]]
     ++ [
         ((myModMask, xK_g), withFocused toggleBorder)
-       ,((myModMask, xK_p), spawn ("$(" ++ home ++ "/.cabal/bin/yeganesh -x -- -fn 'JetBrains Mono NL-9' -b)"))
-       ,((myModMask .|. shiftMask, xK_p), gnomeRun)
-       ,((mod1Mask, xK_F2), gnomeRun)
+       ,((myModMask, xK_p), spawn myLauncher)
+       -- ,((myModMask .|. shiftMask, xK_p), spawn "albert show")
+       -- ,((mod1Mask, xK_F2), spawn "albert show")
        ,((myModMask, xK_x), spawn "flameshot full -c")
        ,((myModMask .|. shiftMask, xK_x), spawn "flameshot gui")
        ,((myModMask, xK_backslash), spawn "1password --toggle")
@@ -82,16 +88,19 @@ main = do
        ]
     )
 
+myLogHook :: DC.Client -> PP
+myLogHook dbus = def { ppOutput = D.send dbus }
+
 myLayout = smartBorders $ layoutHook gnomeConfig ||| desktopLayoutModifiers (ThreeColMid 1 (3/100) (1/2))
 
-myLauncher = "$(/home/shane/.calbal/bin/yeganesh -x -- -fn 'dina-9' -b)"
+myLauncher = "$($HOME/.cabal/bin/yeganesh -x -- -fn 'Monoid-8' -b)"
 
 myModMask = mod4Mask
 
 myStartupHook = do
   startupHook gnomeConfig
   setWMName "LG3D"
-  spawn "/home/shane/bin/gnome-panel-replace.sh"
+  spawn "$HOME/bin/xmonad-post.sh"
 
 myManageHook = composeAll
   [ className =? "mpv" --> doFloat
@@ -100,8 +109,8 @@ myManageHook = composeAll
   , className =? "Gnome-tweaks" --> doFloat
   , className =? "Gnome-control-center" --> doFloat
   , className =? "EasyConnect" --> doFloat
-  , className =? "Kupfer" --> doFloat
-  , className =? "albert" --> doFloat
+  , className =? "Ulauncher" --> hasBorder False >> doFloat
+  , className =? "albert" --> hasBorder False >> doFloat
   , className =? "Synapse" --> doFloat
   , className =? "netease-cloud-music" --> doFloat
   , className =? "Gnome-screenshot" --> doFloat
