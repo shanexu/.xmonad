@@ -56,7 +56,7 @@ main = do
   xmonad $ ewmhFullscreen $ gnomeConfig
     { modMask = myModMask
     -- , logHook = dynamicLogWithPP (myLogHook dbus)
-    , terminal = "wezterm"
+    , terminal = "env GLFW_IM_MODULE=ibus kitty"
     , workspaces = myWorkspaces
     , borderWidth = 6
     , focusFollowsMouse = True
@@ -99,7 +99,7 @@ myModMask = mod4Mask
 
 myStartupHook = do
   startupHook gnomeConfig
-  setWMName "LG3D"
+  -- setWMName "LG3D"
   spawn "$HOME/bin/xmonad-post.sh"
 
 myManageHook = composeAll
