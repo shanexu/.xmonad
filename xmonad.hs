@@ -56,7 +56,8 @@ main = do
   xmonad $ ewmhFullscreen $ gnomeConfig
     { modMask = myModMask
     -- , logHook = dynamicLogWithPP (myLogHook dbus)
-    , terminal = "env GLFW_IM_MODULE=ibus kitty"
+    -- , terminal = "env GLFW_IM_MODULE=ibus kitty"
+    , terminal = "wezterm"
     , workspaces = myWorkspaces
     , borderWidth = 6
     , focusFollowsMouse = True
