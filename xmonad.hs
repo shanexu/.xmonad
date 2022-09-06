@@ -30,7 +30,7 @@ import XMonad
       (.|.),
       XConfig(focusFollowsMouse, modMask, terminal, workspaces, borderWidth,
               normalBorderColor, focusedBorderColor, handleEventHook, manageHook,
-              layoutHook, logHook, startupHook) )
+              layoutHook, logHook, startupHook), doBlue )
 import XMonad.Config.Gnome
 import XMonad.Config.Desktop
 import XMonad.Hooks.DynamicLog
@@ -38,7 +38,7 @@ import XMonad.Layout.NoBorders
 import XMonad.Layout.Spacing
 import XMonad.Util.SpawnOnce
 import XMonad.Util.EZConfig
-import XMonad.Hooks.SetWMName
+import XMonad.Hooks.SetWMName ()
 import XMonad.Hooks.ManageHelpers
 import XMonad.Hooks.EwmhDesktops
 import System.Environment
@@ -48,14 +48,16 @@ import XMonad.Layout.ThreeColumns
 import System.Directory
 import qualified XMonad.DBus as D
 import qualified DBus.Client as DC
+import XMonad.Util.Themes (ThemeInfo(theme))
+import qualified Data.Text as T
 
 main :: IO ()
 main = do
-  -- dbus <- D.connect
-  -- D.requestAccess dbus
+  dbus <- D.connect
+  D.requestAccess dbus
   xmonad $ ewmhFullscreen $ gnomeConfig
     { modMask = myModMask
-    -- , logHook = dynamicLogWithPP (myLogHook dbus)
+    , logHook = dynamicLogWithPP (myLogHook dbus) <+> logHook gnomeConfig
     , terminal = "env GLFW_IM_MODULE=ibus kitty"
     -- , terminal = "wezterm"
     , workspaces = myWorkspaces
@@ -77,12 +79,13 @@ main = do
        , (f, m) <- [(W.view, 0), (W.shift, shiftMask)]]
     ++ [
         ((myModMask, xK_g), withFocused toggleBorder)
-       ,((myModMask, xK_p), spawn myLauncher)
+       ,((myModMask, xK_p), spawn "rofi -show run -font 'Fira Mono 18'")
+       ,((myModMask .|. shiftMask, xK_p), spawn "rofi -show window -font 'Fira Mono 18'")
        -- ,((myModMask .|. shiftMask, xK_p), spawn "albert show")
        -- ,((mod1Mask, xK_F2), spawn "albert show")
        ,((myModMask, xK_x), spawn "flameshot full -c")
        ,((myModMask .|. shiftMask, xK_x), spawn "flameshot gui")
-       ,((myModMask, xK_backslash), spawn "1password --toggle")
+       ,((myModMask, xK_backslash), spawn "1password --quick-access")
        ,((mod1Mask .|. controlMask, xK_l), spawn "dbus-send --type=method_call --dest=org.gnome.ScreenSaver /org/gnome/ScreenSaver org.gnome.ScreenSaver.Lock")
        -- ,((myModMask, xK_x), spawn "gnome-screenshot -i")
        -- ,((myModMask .|. shiftMask, xK_x), spawn "gnome-screenshot -a -i")
@@ -90,7 +93,13 @@ main = do
     )
 
 myLogHook :: DC.Client -> PP
-myLogHook dbus = def { ppOutput = D.send dbus }
+myLogHook dbus = def { ppOutput =
+                       \log -> do
+                         let delimiter = T.pack " : "
+                             layout = drop 8
+                               $ T.unpack
+                               $ T.splitOn delimiter (T.pack log) !! 1
+                         D.send dbus layout }
 
 myLayout = smartBorders $ layoutHook gnomeConfig ||| desktopLayoutModifiers (ThreeColMid 1 (3/100) (1/2))
 
@@ -111,11 +120,10 @@ myManageHook = composeAll
   , className =? "Gnome-control-center" --> doFloat
   , className =? "EasyConnect" --> doFloat
   , className =? "Ulauncher" --> hasBorder False >> doFloat
-  , className =? "albert" --> hasBorder False >> doFloat
-  , className =? "Synapse" --> doFloat
-  , className =? "netease-cloud-music" --> doFloat
+  -- , className =? "netease-cloud-music" --> doFloat
   , className =? "Gnome-screenshot" --> doFloat
-  , className =? "1Password" --> doFloat
+  -- , className =? "1Password" --> doFloat
+  , title =? "Quick Access — 1Password" --> doFloat
   , className =? "Youdao Dict" --> hasBorder False >> doFloat
   , title =? "Run Application" --> doFloat
   , title =? "Log Out" --> doFloat
