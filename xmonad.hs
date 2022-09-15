@@ -9,6 +9,7 @@ import XMonad
       xK_e,
       xK_g,
       xK_l,
+      xK_m,
       xK_p,
       xK_r,
       xK_w,
@@ -30,12 +31,14 @@ import XMonad
       (.|.),
       XConfig(focusFollowsMouse, modMask, terminal, workspaces, borderWidth,
               normalBorderColor, focusedBorderColor, handleEventHook, manageHook,
-              layoutHook, logHook, startupHook), doBlue )
+              layoutHook, logHook, startupHook), doBlue, sendMessage )
 import XMonad.Config.Gnome
 import XMonad.Config.Desktop
 import XMonad.Hooks.DynamicLog
 import XMonad.Layout.NoBorders
+import XMonad.Layout.Maximize
 import XMonad.Layout.Spacing
+import XMonad.Layout.ThreeColumns
 import XMonad.Util.SpawnOnce
 import XMonad.Util.EZConfig
 import XMonad.Hooks.SetWMName ()
@@ -44,7 +47,6 @@ import XMonad.Hooks.EwmhDesktops
 import System.Environment
 import qualified XMonad.StackSet as W
 import XMonad.Actions.NoBorders
-import XMonad.Layout.ThreeColumns
 import System.Directory
 import qualified XMonad.DBus as D
 import qualified DBus.Client as DC
@@ -59,11 +61,11 @@ main = do
     { modMask = myModMask
     , logHook = dynamicLogWithPP (myLogHook dbus) <+> logHook gnomeConfig
     , terminal = "env GLFW_IM_MODULE=ibus kitty"
-    -- , terminal = "wezterm"
     , workspaces = myWorkspaces
     , borderWidth = 6
     , focusFollowsMouse = True
-    , layoutHook = spacingRaw True (Border 0 0 0 0) False (Border 6 6 6 6) True myLayout
+    -- , layoutHook = maximize $ spacingRaw True (Border 0 0 0 0) False (Border 6 6 6 6) True myLayout
+    , layoutHook = myLayout
     -- , normalBorderColor = "#707880"
     -- , focusedBorderColor = "#33AADD"
     , normalBorderColor = "#555555"
@@ -79,16 +81,13 @@ main = do
        , (f, m) <- [(W.view, 0), (W.shift, shiftMask)]]
     ++ [
         ((myModMask, xK_g), withFocused toggleBorder)
-       ,((myModMask, xK_p), spawn "rofi -show run -font 'Fira Mono 18'")
-       ,((myModMask .|. shiftMask, xK_p), spawn "rofi -show window -font 'Fira Mono 18'")
-       -- ,((myModMask .|. shiftMask, xK_p), spawn "albert show")
-       -- ,((mod1Mask, xK_F2), spawn "albert show")
+       ,((myModMask, xK_p), spawn "rofi -show run -font 'Cascadia Code 18'")
+       ,((myModMask .|. shiftMask, xK_p), spawn "rofi -show window -font 'Cascadia Code 18'")
        ,((myModMask, xK_x), spawn "flameshot full -c")
        ,((myModMask .|. shiftMask, xK_x), spawn "flameshot gui")
        ,((myModMask, xK_backslash), spawn "1password --quick-access")
        ,((mod1Mask .|. controlMask, xK_l), spawn "dbus-send --type=method_call --dest=org.gnome.ScreenSaver /org/gnome/ScreenSaver org.gnome.ScreenSaver.Lock")
-       -- ,((myModMask, xK_x), spawn "gnome-screenshot -i")
-       -- ,((myModMask .|. shiftMask, xK_x), spawn "gnome-screenshot -a -i")
+       ,((myModMask .|. shiftMask, xK_m), withFocused (sendMessage . maximizeRestore))
        ]
     )
 
@@ -96,12 +95,12 @@ myLogHook :: DC.Client -> PP
 myLogHook dbus = def { ppOutput =
                        \log -> do
                          let delimiter = T.pack " : "
-                             layout = drop 8
+                             layout = drop 17
                                $ T.unpack
                                $ T.splitOn delimiter (T.pack log) !! 1
                          D.send dbus layout }
 
-myLayout = smartBorders $ layoutHook gnomeConfig ||| desktopLayoutModifiers (ThreeColMid 1 (3/100) (1/2))
+myLayout = smartBorders $ maximize $ spacingRaw True (Border 0 0 0 0) False (Border 6 6 6 6) True $ layoutHook gnomeConfig ||| desktopLayoutModifiers (ThreeColMid 1 (3/100) (1/2))
 
 myLauncher = "$($HOME/.cabal/bin/yeganesh -x -- -fn 'Monoid-8' -b)"
 
@@ -120,9 +119,8 @@ myManageHook = composeAll
   , className =? "Gnome-control-center" --> doFloat
   , className =? "EasyConnect" --> doFloat
   , className =? "Ulauncher" --> hasBorder False >> doFloat
-  -- , className =? "netease-cloud-music" --> doFloat
   , className =? "Gnome-screenshot" --> doFloat
-  -- , className =? "1Password" --> doFloat
+  , className =? "1Password" --> doFloat
   , title =? "Quick Access — 1Password" --> doFloat
   , className =? "Youdao Dict" --> hasBorder False >> doFloat
   , title =? "Run Application" --> doFloat
