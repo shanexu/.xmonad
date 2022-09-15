@@ -64,7 +64,6 @@ main = do
     , workspaces = myWorkspaces
     , borderWidth = 6
     , focusFollowsMouse = True
-    -- , layoutHook = maximize $ spacingRaw True (Border 0 0 0 0) False (Border 6 6 6 6) True myLayout
     , layoutHook = myLayout
     -- , normalBorderColor = "#707880"
     -- , focusedBorderColor = "#33AADD"
