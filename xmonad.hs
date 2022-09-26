@@ -41,7 +41,7 @@ import XMonad.Layout.Spacing
 import XMonad.Layout.ThreeColumns
 import XMonad.Util.SpawnOnce
 import XMonad.Util.EZConfig
-import XMonad.Hooks.SetWMName ()
+import XMonad.Hooks.SetWMName
 import XMonad.Hooks.ManageHelpers
 import XMonad.Hooks.EwmhDesktops
 import System.Environment
@@ -107,8 +107,8 @@ myModMask = mod4Mask
 
 myStartupHook = do
   startupHook gnomeConfig
-  -- setWMName "LG3D"
-  spawn "$HOME/bin/xmonad-post.sh"
+  spawn "$HOME/.xmonad/scripts/autostart.sh"
+  setWMName "LG3D"
 
 myManageHook = composeAll
   [ className =? "mpv" --> doFloat
