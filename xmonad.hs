@@ -24,6 +24,8 @@ import XMonad
       className,
       composeAll,
       doFloat,
+      doIgnore,
+      doF,
       title,
       screenWorkspace,
       windows,
@@ -31,7 +33,7 @@ import XMonad
       (.|.),
       XConfig(focusFollowsMouse, modMask, terminal, workspaces, borderWidth,
               normalBorderColor, focusedBorderColor, handleEventHook, manageHook,
-              layoutHook, logHook, startupHook), doBlue, sendMessage )
+              layoutHook, logHook, startupHook), sendMessage )
 import XMonad.Config.Gnome
 import XMonad.Config.Desktop
 import XMonad.Hooks.DynamicLog
@@ -42,7 +44,7 @@ import XMonad.Layout.ThreeColumns
 import XMonad.Util.SpawnOnce
 import XMonad.Util.EZConfig
 import XMonad.Hooks.SetWMName
-import XMonad.Hooks.ManageHelpers
+import XMonad.Hooks.ManageHelpers ( doFullFloat, isFullscreen )
 import XMonad.Hooks.EwmhDesktops
 import System.Environment
 import qualified XMonad.StackSet as W
@@ -52,6 +54,8 @@ import qualified XMonad.DBus as D
 import qualified DBus.Client as DC
 import XMonad.Util.Themes (ThemeInfo(theme))
 import qualified Data.Text as T
+import Data.Text.Encoding.Error (ignore)
+import XMonad.Actions.CopyWindow (copyToAll)
 
 main :: IO ()
 main = do
@@ -125,6 +129,7 @@ myManageHook = composeAll
   , title =? "Run Application" --> doFloat
   , title =? "Log Out" --> doFloat
   , isFullscreen --> doFullFloat
+  , title =? "歌词" --> doF W.focusDown <+> doF copyToAll
   ]
 
 myWorkspaces = miscs 9 ++ ["0"]
