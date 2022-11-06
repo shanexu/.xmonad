@@ -1,4 +1,3 @@
 #!/bin/bash
 
-sleep 2
-exec polybar -r topbar &
+exec polybar -r topbar

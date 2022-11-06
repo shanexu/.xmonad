@@ -65,6 +65,7 @@ main = do
     { modMask = myModMask
     , logHook = dynamicLogWithPP (myLogHook dbus) <+> logHook gnomeConfig
     , terminal = "env GLFW_IM_MODULE=ibus kitty"
+    -- , terminal = "wezterm"
     , workspaces = myWorkspaces
     , borderWidth = 6
     , focusFollowsMouse = True
@@ -111,8 +112,9 @@ myModMask = mod4Mask
 
 myStartupHook = do
   startupHook gnomeConfig
-  spawn "$HOME/.xmonad/scripts/autostart.sh"
-  setWMName "LG3D"
+  spawn "$HOME/.xmonad/scripts/olybarp.sh"
+  spawn "$HOME/.xmonad/scripts/ay-night-switcherd.sh"
+  -- setWMName "LG3D"
 
 myManageHook = composeAll
   [ className =? "mpv" --> doFloat
@@ -129,7 +131,7 @@ myManageHook = composeAll
   , title =? "Run Application" --> doFloat
   , title =? "Log Out" --> doFloat
   , isFullscreen --> doFullFloat
-  , title =? "歌词" --> doF W.focusDown <+> doF copyToAll
+  , title =? "歌词" --> hasBorder False >> doF W.focusDown <+> doF copyToAll
   ]
 
 myWorkspaces = miscs 9 ++ ["0"]
