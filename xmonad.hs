@@ -46,7 +46,7 @@ import XMonad.Layout.ThreeColumns
 import XMonad.Util.SpawnOnce
 import XMonad.Util.EZConfig
 import XMonad.Hooks.SetWMName
-import XMonad.Hooks.ManageHelpers ( doFullFloat, isFullscreen )
+import XMonad.Hooks.ManageHelpers ( doFullFloat, isFullscreen, doCenterFloat )
 import XMonad.Hooks.EwmhDesktops
 import System.Environment
 import qualified XMonad.StackSet as W
@@ -97,13 +97,12 @@ main = do
        ]
     )
 
-myLogHook :: DC.Client -> PP
 myLogHook dbus = def { ppOutput =
                        \log -> do
                          let delimiter = T.pack " : "
-                             layout = drop 17
-                               $ T.unpack
-                               $ T.splitOn delimiter (T.pack log) !! 1
+                             (_, tail) = T.breakOn delimiter (T.pack log)
+                             layout = drop 20
+                               $ T.unpack tail
                          D.send dbus layout }
 
 myLayout = smartBorders $ maximize $ spacingRaw True (Border 0 0 0 0) False (Border 6 6 6 6) True $ layoutHook gnomeConfig ||| desktopLayoutModifiers (ThreeColMid 1 (3/100) (1/2))
@@ -115,6 +114,7 @@ myModMask = mod4Mask
 myStartupHook = do
   startupHook gnomeConfig
   spawn "$HOME/.xmonad/scripts/olybarp.sh"
+  -- spawn "$HOME/.xmonad/scripts/int2t.sh"
   spawn "$HOME/.xmonad/scripts/ay-night-switcherd.sh"
   -- setWMName "LG3D"
 
@@ -128,12 +128,13 @@ myManageHook = composeAll
   , className =? "Ulauncher" --> hasBorder False >> doFloat
   , className =? "Gnome-screenshot" --> doFloat
   , className =? "1Password" --> doFloat
-  , title =? "Quick Access — 1Password" --> doFloat
   , className =? "Youdao Dict" --> hasBorder False >> doFloat
+  , className =? "copyq" --> doCenterFloat
+  , title =? "Quick Access — 1Password" --> doFloat
   , title =? "Run Application" --> doFloat
   , title =? "Log Out" --> doFloat
-  , isFullscreen --> doFullFloat
   , title =? "歌词" --> hasBorder False >> doF W.focusDown <+> doF copyToAll
+  , isFullscreen --> doFullFloat
   ]
 
 myWorkspaces = miscs 9 ++ ["0"]
