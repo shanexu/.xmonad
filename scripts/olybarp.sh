@@ -1,5 +1,7 @@
 #!/bin/bash
 
+HOST=$(hostname)
+
 if [ "$HOST" = "shanes-archlaptop" ]; then
     export TOPRIGHT_WIDTH='15%'
     export TOPRIGHT_OFFSET_X='85%'
