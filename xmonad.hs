@@ -38,7 +38,7 @@ import XMonad
       (.|.),
       XConfig(focusFollowsMouse, modMask, terminal, workspaces, borderWidth,
               normalBorderColor, focusedBorderColor, handleEventHook, manageHook,
-              layoutHook, logHook, startupHook), sendMessage )
+              layoutHook, logHook, startupHook), sendMessage, ifM )
 import XMonad.Config.Gnome
 import XMonad.Config.Desktop
 import XMonad.Hooks.DynamicLog
@@ -51,19 +51,21 @@ import XMonad.Util.EZConfig
 import XMonad.Hooks.SetWMName
 import XMonad.Hooks.ManageHelpers ( doFullFloat, isFullscreen, doCenterFloat )
 import XMonad.Hooks.EwmhDesktops
-import System.Environment
+import Network.HostName
 import qualified XMonad.StackSet as W
 import XMonad.Actions.NoBorders
 import System.Directory
 import qualified XMonad.DBus as D
 import qualified DBus.Client as DC
-import XMonad.Util.Themes (ThemeInfo(theme))
+import XMonad.Util.Themes ( ThemeInfo(theme) )
 import qualified Data.Text as T
-import Data.Text.Encoding.Error (ignore)
-import XMonad.Actions.CopyWindow (copyToAll)
+import Data.Text.Encoding.Error ( ignore )
+import XMonad.Actions.CopyWindow ( copyToAll )
+import Control.Monad (when)
 
 main :: IO ()
 main = do
+  hostname <- getHostName
   dbus <- D.connect
   D.requestAccess dbus
   xmonad $ ewmhFullscreen $ gnomeConfig
@@ -81,7 +83,7 @@ main = do
     , normalBorderColor = "#555555"
     , focusedBorderColor = "#f36864"
     , handleEventHook = handleEventHook gnomeConfig
-    , startupHook = myStartupHook
+    , startupHook = myStartupHook hostname
     , manageHook = myManageHook <+> manageHook gnomeConfig
     } `additionalKeys` (
     [((myModMask, key), windows $ W.greedyView ws) | (key, ws) <- myExtraWorkspaces ]
@@ -97,8 +99,7 @@ main = do
        ,((myModMask .|. shiftMask, xK_x), spawn "flameshot gui")
        ,((myModMask .|. shiftMask, xK_v), spawn "copyq toggle")
        ,((myModMask, xK_backslash), spawn "1password --quick-access")
-       -- ,((mod1Mask .|. controlMask, xK_l), spawn "dbus-send --type=method_call --dest=org.gnome.ScreenSaver /org/gnome/ScreenSaver org.gnome.ScreenSaver.Lock")
-       ,((mod1Mask .|. controlMask, xK_l), spawn "xlock -mode rain")
+       ,((mod1Mask .|. controlMask, xK_l), spawn $ if hostname == "archdesktop" then "dbus-send --type=method_call --dest=org.gnome.ScreenSaver /org/gnome/ScreenSaver org.gnome.ScreenSaver.Lock" else "xlock -mode rain")
        ,((myModMask .|. shiftMask, xK_m), withFocused (sendMessage . maximizeRestore))
        ,((myModMask, xK_a), spawn "autorandr -c")
        ]
@@ -118,11 +119,11 @@ myLauncher = "$($HOME/.cabal/bin/yeganesh -x -- -fn 'Monoid-8' -b)"
 
 myModMask = mod4Mask
 
-myStartupHook = do
+myStartupHook hostname = do
   startupHook gnomeConfig
   spawn "$HOME/.xmonad/scripts/olybarp.sh"
   -- spawn "$HOME/bin/redmi"
-  spawn "$HOME/.xmonad/scripts/autolockx.sh"
+  when (hostname == "archlaptop") $ spawn "$HOME/.xmonad/scripts/autolockx.sh"
   -- spawn "$HOME/.xmonad/scripts/int2t.sh"
   spawn "$HOME/.xmonad/scripts/ay-night-switcherd.sh"
   -- setWMName "LG3D"
