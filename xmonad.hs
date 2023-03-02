@@ -6,6 +6,9 @@ import XMonad
       xK_0,
       xK_F2,
       xK_backslash,
+      xK_a,
+      xK_c,
+      xK_v,
       xK_e,
       xK_g,
       xK_l,
@@ -67,7 +70,8 @@ main = do
     { modMask = myModMask
     , logHook = dynamicLogWithPP (myLogHook dbus) <+> logHook gnomeConfig
     -- , terminal = "env GLFW_IM_MODULE=ibus kitty"
-    , terminal = "wezterm"
+    -- , terminal = "wezterm"
+    , terminal = "alacritty"
     , workspaces = myWorkspaces
     , borderWidth = 6
     , focusFollowsMouse = True
@@ -87,13 +91,16 @@ main = do
        , (f, m) <- [(W.view, 0), (W.shift, shiftMask)]]
     ++ [
         ((myModMask, xK_g), withFocused toggleBorder)
-       ,((myModMask, xK_p), spawn "rofi -show run -font 'Cascadia Code 18'")
-       ,((myModMask .|. shiftMask, xK_p), spawn "rofi -show window -font 'Cascadia Code 18'")
+       ,((myModMask, xK_p), spawn "rofi -combi-modi window,drun -show combi -font 'Cascadia Code 14' -icon-theme 'Fluent' -show-icons -dpi 144")
+       ,((myModMask .|. shiftMask, xK_p), spawn "rofi -show window -font 'Cascadia Code 14' -icon-theme 'Fluent' -show-icons -dpi 144")
        ,((myModMask, xK_x), spawn "flameshot full -c")
        ,((myModMask .|. shiftMask, xK_x), spawn "flameshot gui")
+       ,((myModMask .|. shiftMask, xK_v), spawn "copyq toggle")
        ,((myModMask, xK_backslash), spawn "1password --quick-access")
-       ,((mod1Mask .|. controlMask, xK_l), spawn "dbus-send --type=method_call --dest=org.gnome.ScreenSaver /org/gnome/ScreenSaver org.gnome.ScreenSaver.Lock")
+       -- ,((mod1Mask .|. controlMask, xK_l), spawn "dbus-send --type=method_call --dest=org.gnome.ScreenSaver /org/gnome/ScreenSaver org.gnome.ScreenSaver.Lock")
+       ,((mod1Mask .|. controlMask, xK_l), spawn "xlock -mode rain")
        ,((myModMask .|. shiftMask, xK_m), withFocused (sendMessage . maximizeRestore))
+       ,((myModMask, xK_a), spawn "autorandr -c")
        ]
     )
 
@@ -114,6 +121,8 @@ myModMask = mod4Mask
 myStartupHook = do
   startupHook gnomeConfig
   spawn "$HOME/.xmonad/scripts/olybarp.sh"
+  -- spawn "$HOME/bin/redmi"
+  spawn "$HOME/.xmonad/scripts/autolockx.sh"
   -- spawn "$HOME/.xmonad/scripts/int2t.sh"
   spawn "$HOME/.xmonad/scripts/ay-night-switcherd.sh"
   -- setWMName "LG3D"

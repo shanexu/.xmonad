@@ -3,9 +3,20 @@
 HOST=$(hostname)
 
 if [ "$HOST" = "shanes-archlaptop" ]; then
-    export TOPRIGHT_WIDTH='15%'
-    export TOPRIGHT_OFFSET_X='85%'
-    export TOPBAR_WIDTH='85%'
+    monitor_layout=$(autorandr --detected)
+    if [ "$monitor_layout" = "home_dell" ]; then
+        export TOPRIGHT_WIDTH='11.3%'
+        export TOPRIGHT_OFFSET_X='88.7%'
+        export TOPBAR_WIDTH='88.7%'
+    elif [ "$monitor_layout" = "office_redmi" ]; then
+        export TOPRIGHT_WIDTH='11.3%'
+        export TOPRIGHT_OFFSET_X='88.7%'
+        export TOPBAR_WIDTH='88.7%'
+    else
+        export TOPRIGHT_WIDTH='15%'
+        export TOPRIGHT_OFFSET_X='85%'
+        export TOPBAR_WIDTH='85%'
+    fi
 else
     export TOPRIGHT_WIDTH='11.3%'
     export TOPRIGHT_OFFSET_X='88.7%'
