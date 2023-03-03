@@ -44,7 +44,7 @@ main = do
     , logHook = dynamicLogWithPP (myLogHook dbus) <+> logHook gnomeConfig
     -- , terminal = "env GLFW_IM_MODULE=ibus kitty"
     -- , terminal = "wezterm"
-    , terminal = "alacritty"
+    , terminal = "tabbed alacritty --embed"
     , workspaces = myWorkspaces
     , borderWidth = 6
     , focusFollowsMouse = True
