@@ -44,7 +44,7 @@ main = do
     , logHook = dynamicLogWithPP (myLogHook dbus) <+> logHook gnomeConfig
     -- , terminal = "env GLFW_IM_MODULE=ibus kitty"
     -- , terminal = "wezterm"
-    , terminal = "tabbed alacritty --embed"
+    , terminal = "tabbed -c alacritty --embed"
     , workspaces = myWorkspaces
     , borderWidth = 6
     , focusFollowsMouse = True
@@ -64,7 +64,7 @@ main = do
        , (f, m) <- [(W.view, 0), (W.shift, shiftMask)]]
     ++ [
         ((myModMask, xK_g), withFocused toggleBorder)
-       ,((myModMask, xK_p), spawn "rofi -combi-modi window,drun -show combi -font 'Cascadia Code 14' -icon-theme 'Fluent' -show-icons -dpi 144")
+       ,((myModMask, xK_p), spawn "rofi -combi-modi window,drun,run -show combi -font 'Cascadia Code 14' -icon-theme 'Fluent' -show-icons -dpi 144")
        ,((myModMask .|. shiftMask, xK_p), spawn "rofi -show window -font 'Cascadia Code 14' -icon-theme 'Fluent' -show-icons -dpi 144")
        ,((myModMask, xK_x), spawn "flameshot full -c")
        ,((myModMask .|. shiftMask, xK_x), spawn "flameshot gui")
