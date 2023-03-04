@@ -24,6 +24,7 @@ import           XMonad.Hooks.DynamicLog
 import           XMonad.Hooks.EwmhDesktops
 import           XMonad.Hooks.ManageHelpers (doCenterFloat, doFullFloat,
                                              isFullscreen)
+import           XMonad.Hooks.Place         (smart)
 import           XMonad.Hooks.SetWMName
 import           XMonad.Layout.Maximize
 import           XMonad.Layout.NoBorders
@@ -84,7 +85,7 @@ myLogHook dbus = def { ppOutput =
                                $ T.unpack tail
                          D.send dbus layout }
 
-myLayout = smartBorders $ maximize $ spacingRaw True (Border 0 0 0 0) False (Border 6 6 6 6) True $ layoutHook gnomeConfig ||| desktopLayoutModifiers (ThreeColMid 1 (3/100) (1/2))
+myLayout = smartSpacing 4 $ smartBorders $ maximize $ layoutHook gnomeConfig ||| desktopLayoutModifiers (ThreeColMid 1 (3/100) (1/2))
 
 myLauncher = "$($HOME/.cabal/bin/yeganesh -x -- -fn 'Monoid-8' -b)"
 
