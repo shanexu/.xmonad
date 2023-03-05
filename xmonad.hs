@@ -5,18 +5,19 @@ import qualified DBus.Client                  as DC
 import           Network.HostName
 import           System.Directory
 import           XMonad                       (XConfig (borderWidth, focusFollowsMouse, focusedBorderColor, handleEventHook, layoutHook, logHook, manageHook, modMask, normalBorderColor, startupHook, terminal, workspaces),
-                                               className, composeAll,
+                                               appName, className, composeAll,
                                                controlMask, doF, doFloat,
                                                doIgnore, ifM, mod1Mask,
                                                mod4Mask, resource,
                                                screenWorkspace, sendMessage,
-                                               shiftMask, spawn, title,
-                                               whenJust, windows, withFocused,
-                                               xK_0, xK_F2, xK_a, xK_backslash,
-                                               xK_c, xK_e, xK_g, xK_l, xK_m,
-                                               xK_p, xK_r, xK_v, xK_w, xK_x,
-                                               xmonad, (-->), (.|.), (<&&>),
-                                               (<+>), (=?), (|||))
+                                               shiftMask, spawn, stringProperty,
+                                               title, whenJust, windows,
+                                               withFocused, xK_0, xK_F2, xK_a,
+                                               xK_backslash, xK_c, xK_e, xK_g,
+                                               xK_l, xK_m, xK_p, xK_r, xK_t,
+                                               xK_v, xK_w, xK_x, xmonad, (-->),
+                                               (.|.), (<&&>), (<+>), (=?),
+                                               (|||))
 import           XMonad.Actions.CopyWindow    (copyToAll)
 import           XMonad.Actions.NoBorders
 import           XMonad.Config.Desktop
@@ -31,10 +32,15 @@ import           XMonad.Hooks.SetWMName
 import           XMonad.Layout.Maximize
 import           XMonad.Layout.NoBorders
 import           XMonad.Layout.Spacing
+import           XMonad.Layout.Tabbed         (tabbed)
 import           XMonad.Layout.ThreeColumns
 import qualified XMonad.StackSet              as W
 import           XMonad.Util.EZConfig
-import           XMonad.Util.NamedScratchpad  (scratchpadWorkspaceTag)
+import           XMonad.Util.NamedScratchpad  (NamedScratchpad (NS),
+                                               customFloating,
+                                               namedScratchpadAction,
+                                               namedScratchpadManageHook,
+                                               scratchpadWorkspaceTag)
 import           XMonad.Util.SpawnOnce
 import           XMonad.Util.Themes           (ThemeInfo (theme))
 import           XMonad.Util.WorkspaceCompare (filterOutWs)
@@ -78,6 +84,7 @@ main = do
        ,((mod1Mask .|. controlMask, xK_l), spawn $ if hostname == "archdesktop" then "dbus-send --type=method_call --dest=org.gnome.ScreenSaver /org/gnome/ScreenSaver org.gnome.ScreenSaver.Lock" else "xlock -mode rain")
        ,((myModMask .|. shiftMask, xK_m), withFocused (sendMessage . maximizeRestore))
        ,((myModMask, xK_a), spawn "autorandr -c")
+       ,((myModMask .|. controlMask, xK_t), namedScratchpadAction scratchpads "dropDownTerminal")
        ]
     )
 
@@ -104,7 +111,11 @@ myStartupHook hostname = do
   spawn "$HOME/.xmonad/scripts/ay-night-switcherd.sh"
   -- setWMName "LG3D"
 
-myManageHook = composeAll
+scratchpads = [ NS "dropDownTerminal" "tabbed -c -n Drop-Down-Terminal alacritty -o window.opacity=0.80 --embed" (appName =? "Drop-Down-Terminal") (customFloating $ W.RationalRect (1/8) (0/6) (3/4) (2/3))
+              ]
+  where role = stringProperty "WM_WINDOW_ROLE"
+
+myManageHook = namedScratchpadManageHook scratchpads <+> composeAll
   [ className =? "mpv" --> doFloat
   , className =? "MComix" --> doFloat
   , className =? "Gnome-mpv" --> doFloat
