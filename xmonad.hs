@@ -1,46 +1,50 @@
-import           Control.Monad              (when)
-import qualified Data.Text                  as T
-import           Data.Text.Encoding.Error   (ignore)
-import qualified DBus.Client                as DC
+import           Control.Monad                (when)
+import qualified Data.Text                    as T
+import           Data.Text.Encoding.Error     (ignore)
+import qualified DBus.Client                  as DC
 import           Network.HostName
 import           System.Directory
-import           XMonad                     (XConfig (borderWidth, focusFollowsMouse, focusedBorderColor, handleEventHook, layoutHook, logHook, manageHook, modMask, normalBorderColor, startupHook, terminal, workspaces),
-                                             className, composeAll, controlMask,
-                                             doF, doFloat, doIgnore, ifM,
-                                             mod1Mask, mod4Mask, resource,
-                                             screenWorkspace, sendMessage,
-                                             shiftMask, spawn, title, whenJust,
-                                             windows, withFocused, xK_0, xK_F2,
-                                             xK_a, xK_backslash, xK_c, xK_e,
-                                             xK_g, xK_l, xK_m, xK_p, xK_r, xK_v,
-                                             xK_w, xK_x, xmonad, (-->), (.|.),
-                                             (<&&>), (<+>), (=?), (|||))
-import           XMonad.Actions.CopyWindow  (copyToAll)
+import           XMonad                       (XConfig (borderWidth, focusFollowsMouse, focusedBorderColor, handleEventHook, layoutHook, logHook, manageHook, modMask, normalBorderColor, startupHook, terminal, workspaces),
+                                               className, composeAll,
+                                               controlMask, doF, doFloat,
+                                               doIgnore, ifM, mod1Mask,
+                                               mod4Mask, resource,
+                                               screenWorkspace, sendMessage,
+                                               shiftMask, spawn, title,
+                                               whenJust, windows, withFocused,
+                                               xK_0, xK_F2, xK_a, xK_backslash,
+                                               xK_c, xK_e, xK_g, xK_l, xK_m,
+                                               xK_p, xK_r, xK_v, xK_w, xK_x,
+                                               xmonad, (-->), (.|.), (<&&>),
+                                               (<+>), (=?), (|||))
+import           XMonad.Actions.CopyWindow    (copyToAll)
 import           XMonad.Actions.NoBorders
 import           XMonad.Config.Desktop
 import           XMonad.Config.Gnome
-import qualified XMonad.DBus                as D
+import qualified XMonad.DBus                  as D
 import           XMonad.Hooks.DynamicLog
 import           XMonad.Hooks.EwmhDesktops
-import           XMonad.Hooks.ManageHelpers (doCenterFloat, doFullFloat,
-                                             isFullscreen)
-import           XMonad.Hooks.Place         (smart)
+import           XMonad.Hooks.ManageHelpers   (doCenterFloat, doFullFloat,
+                                               isFullscreen)
+import           XMonad.Hooks.Place           (smart)
 import           XMonad.Hooks.SetWMName
 import           XMonad.Layout.Maximize
 import           XMonad.Layout.NoBorders
 import           XMonad.Layout.Spacing
 import           XMonad.Layout.ThreeColumns
-import qualified XMonad.StackSet            as W
+import qualified XMonad.StackSet              as W
 import           XMonad.Util.EZConfig
+import           XMonad.Util.NamedScratchpad  (scratchpadWorkspaceTag)
 import           XMonad.Util.SpawnOnce
-import           XMonad.Util.Themes         (ThemeInfo (theme))
+import           XMonad.Util.Themes           (ThemeInfo (theme))
+import           XMonad.Util.WorkspaceCompare (filterOutWs)
 
 main :: IO ()
 main = do
   hostname <- getHostName
   dbus <- D.connect
   D.requestAccess dbus
-  xmonad $ ewmhFullscreen $ gnomeConfig
+  xmonad $ ewmhFullscreen . addEwmhWorkspaceSort (pure (filterOutWs [scratchpadWorkspaceTag])) $ gnomeConfig
     { modMask = myModMask
     , logHook = dynamicLogWithPP (myLogHook dbus) <+> logHook gnomeConfig
     -- , terminal = "env GLFW_IM_MODULE=ibus kitty"
