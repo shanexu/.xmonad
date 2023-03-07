@@ -106,7 +106,7 @@ myStartupHook hostname = do
   startupHook gnomeConfig
   spawn "$HOME/.xmonad/scripts/olybarp.sh"
   -- spawn "$HOME/bin/redmi"
-  when (hostname == "archlaptop") $ spawn "$HOME/.xmonad/scripts/autolockx.sh"
+  when (hostname == "shanes-archlaptop") $ spawn "$HOME/.xmonad/scripts/autolockx.sh"
   -- spawn "$HOME/.xmonad/scripts/int2t.sh"
   spawn "$HOME/.xmonad/scripts/ay-night-switcherd.sh"
   -- setWMName "LG3D"
