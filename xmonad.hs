@@ -77,11 +77,12 @@ main = do
         ((myModMask, xK_g), withFocused toggleBorder)
        ,((myModMask, xK_p), spawn "rofi -combi-modi window,drun,run -show combi -font 'Cascadia Code 14' -icon-theme 'Fluent' -show-icons -dpi 144")
        ,((myModMask .|. shiftMask, xK_p), spawn "rofi -show window -font 'Cascadia Code 14' -icon-theme 'Fluent' -show-icons -dpi 144")
-       ,((myModMask, xK_x), spawn "flameshot full -c")
-       ,((myModMask .|. shiftMask, xK_x), spawn "flameshot gui")
+       ,((myModMask, xK_x), spawn "QT_AUTO_SCREEN_SCALE_FACTOR=0 flameshot full -c")
+       ,((myModMask .|. shiftMask, xK_x), spawn "QT_AUTO_SCREEN_SCALE_FACTOR=0 flameshot gui")
        ,((myModMask .|. shiftMask, xK_v), spawn "copyq toggle")
        ,((myModMask, xK_backslash), spawn "1password --quick-access")
-       ,((mod1Mask .|. controlMask, xK_l), spawn $ if hostname == "archdesktop" then "dbus-send --type=method_call --dest=org.gnome.ScreenSaver /org/gnome/ScreenSaver org.gnome.ScreenSaver.Lock" else "xlock -mode rain")
+       -- ,((mod1Mask .|. controlMask, xK_l), spawn $ if hostname == "archdesktop" then "dbus-send --type=method_call --dest=org.gnome.ScreenSaver /org/gnome/ScreenSaver org.gnome.ScreenSaver.Lock" else "xlock -mode rain")
+       ,((mod1Mask .|. controlMask, xK_l), spawn $ "dbus-send --type=method_call --dest=org.gnome.ScreenSaver /org/gnome/ScreenSaver org.gnome.ScreenSaver.Lock")
        ,((myModMask .|. shiftMask, xK_m), withFocused (sendMessage . maximizeRestore))
        ,((myModMask, xK_a), spawn "autorandr -c")
        ,((myModMask .|. controlMask, xK_t), namedScratchpadAction scratchpads "dropDownTerminal")
@@ -106,7 +107,7 @@ myStartupHook hostname = do
   startupHook gnomeConfig
   spawn "$HOME/.xmonad/scripts/olybarp.sh"
   -- spawn "$HOME/bin/redmi"
-  when (hostname == "shanes-archlaptop") $ spawn "$HOME/.xmonad/scripts/autolockx.sh"
+  -- when (hostname == "shanes-archlaptop") $ spawn "$HOME/.xmonad/scripts/autolockx.sh"
   -- spawn "$HOME/.xmonad/scripts/int2t.sh"
   spawn "$HOME/.xmonad/scripts/ay-night-switcherd.sh"
   -- setWMName "LG3D"
