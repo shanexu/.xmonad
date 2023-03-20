@@ -1,56 +1,69 @@
-import           Control.Monad                (when)
-import qualified Data.Text                    as T
-import           Data.Text.Encoding.Error     (ignore)
-import qualified DBus.Client                  as DC
+import           Control.Monad                      (when)
+import qualified Data.Text                          as T
+import           Data.Text.Encoding.Error           (ignore)
+import qualified DBus.Client                        as DC
 import           Network.HostName
 import           System.Directory
-import           XMonad                       (XConfig (borderWidth, focusFollowsMouse, focusedBorderColor, handleEventHook, layoutHook, logHook, manageHook, modMask, normalBorderColor, startupHook, terminal, workspaces),
-                                               appName, className, composeAll,
-                                               controlMask, doF, doFloat,
-                                               doIgnore, ifM, mod1Mask,
-                                               mod4Mask, resource,
-                                               screenWorkspace, sendMessage,
-                                               shiftMask, spawn, stringProperty,
-                                               title, whenJust, windows,
-                                               withFocused, xK_0, xK_F2, xK_a,
-                                               xK_backslash, xK_c, xK_e, xK_g,
-                                               xK_l, xK_m, xK_p, xK_r, xK_t,
-                                               xK_v, xK_w, xK_x, xmonad, (-->),
-                                               (.|.), (<&&>), (<+>), (=?),
-                                               (|||))
-import           XMonad.Actions.CopyWindow    (copyToAll)
+import           XMonad                             (XConfig (borderWidth, focusFollowsMouse, focusedBorderColor, handleEventHook, layoutHook, logHook, manageHook, modMask, normalBorderColor, startupHook, terminal, workspaces),
+                                                     appName, className,
+                                                     composeAll, controlMask,
+                                                     doF, doFloat, doIgnore,
+                                                     ifM, mod1Mask, mod4Mask,
+                                                     resource, screenWorkspace,
+                                                     sendMessage, shiftMask,
+                                                     spawn, stringProperty,
+                                                     title, whenJust, windows,
+                                                     withFocused, xK_0, xK_Down,
+                                                     xK_F2, xK_Left, xK_Right,
+                                                     xK_Up, xK_a, xK_backslash,
+                                                     xK_c, xK_e, xK_g, xK_l,
+                                                     xK_m, xK_p, xK_r, xK_t,
+                                                     xK_v, xK_w, xK_x, xK_z,
+                                                     xmonad, (-->), (.|.),
+                                                     (<&&>), (<+>), (=?), (|||))
+import           XMonad.Actions.CopyWindow          (copyToAll)
+import           XMonad.Actions.CycleWS             (Direction1D (Next, Prev))
+import           XMonad.Actions.Navigation2D
 import           XMonad.Actions.NoBorders
 import           XMonad.Config.Desktop
 import           XMonad.Config.Gnome
-import qualified XMonad.DBus                  as D
+import qualified XMonad.DBus                        as D
 import           XMonad.Hooks.DynamicLog
 import           XMonad.Hooks.EwmhDesktops
-import           XMonad.Hooks.ManageHelpers   (doCenterFloat, doFullFloat,
-                                               isFullscreen)
-import           XMonad.Hooks.Place           (smart)
+import           XMonad.Hooks.ManageHelpers         (doCenterFloat, doFullFloat,
+                                                     isFullscreen)
+import           XMonad.Hooks.Place                 (smart)
 import           XMonad.Hooks.SetWMName
+import           XMonad.Layout.BinarySpacePartition
+import           XMonad.Layout.BorderResize
 import           XMonad.Layout.Maximize
 import           XMonad.Layout.NoBorders
 import           XMonad.Layout.Spacing
-import           XMonad.Layout.Tabbed         (tabbed)
+import           XMonad.Layout.Tabbed               (tabbed)
 import           XMonad.Layout.ThreeColumns
-import qualified XMonad.StackSet              as W
+import qualified XMonad.StackSet                    as W
 import           XMonad.Util.EZConfig
-import           XMonad.Util.NamedScratchpad  (NamedScratchpad (NS),
-                                               customFloating,
-                                               namedScratchpadAction,
-                                               namedScratchpadManageHook,
-                                               scratchpadWorkspaceTag)
+import           XMonad.Util.NamedScratchpad        (NamedScratchpad (NS),
+                                                     customFloating,
+                                                     namedScratchpadAction,
+                                                     namedScratchpadManageHook,
+                                                     scratchpadWorkspaceTag)
 import           XMonad.Util.SpawnOnce
-import           XMonad.Util.Themes           (ThemeInfo (theme))
-import           XMonad.Util.WorkspaceCompare (filterOutWs)
+import           XMonad.Util.Themes                 (ThemeInfo (theme))
+import           XMonad.Util.WorkspaceCompare       (filterOutWs)
 
 main :: IO ()
 main = do
   hostname <- getHostName
   dbus <- D.connect
   D.requestAccess dbus
-  xmonad $ ewmhFullscreen . addEwmhWorkspaceSort (pure (filterOutWs [scratchpadWorkspaceTag])) $ gnomeConfig
+  xmonad
+    $ navigation2D def
+                   (xK_Up, xK_Left, xK_Down, xK_Right)
+                   [(mod4Mask,               windowGo  ),
+                     (mod4Mask .|. shiftMask, windowSwap)]
+                   False
+    $ ewmhFullscreen . addEwmhWorkspaceSort (pure (filterOutWs [scratchpadWorkspaceTag])) $ gnomeConfig
     { modMask = myModMask
     , logHook = dynamicLogWithPP (myLogHook dbus) <+> logHook gnomeConfig
     -- , terminal = "env GLFW_IM_MODULE=ibus kitty"
@@ -86,6 +99,8 @@ main = do
        ,((myModMask .|. shiftMask, xK_m), withFocused (sendMessage . maximizeRestore))
        ,((myModMask, xK_a), spawn "autorandr -c")
        ,((myModMask .|. controlMask, xK_t), namedScratchpadAction scratchpads "dropDownTerminal")
+       -- ,((myModMask, xK_z), sendMessage Balance)
+       -- ,((myModMask .|. shiftMask, xK_z), sendMessage Equalize)
        ]
     )
 
@@ -93,11 +108,12 @@ myLogHook dbus = def { ppOutput =
                        \log -> do
                          let delimiter = T.pack " : "
                              (_, tail) = T.breakOn delimiter (T.pack log)
-                             layout = drop 20
+                             layout = drop 12
                                $ T.unpack tail
                          D.send dbus layout }
 
-myLayout = smartSpacing 4 $ smartBorders $ maximize $ layoutHook gnomeConfig ||| desktopLayoutModifiers (ThreeColMid 1 (3/100) (1/2))
+-- myLayout = smartSpacing 4 $ smartBorders $ maximize $ borderResize $ layoutHook gnomeConfig ||| desktopLayoutModifiers (ThreeColMid 1 (3/100) (1/2) ||| emptyBSP)
+myLayout = smartBorders $ maximize $ borderResize $ layoutHook gnomeConfig ||| desktopLayoutModifiers (ThreeColMid 1 (3/100) (1/2) ||| emptyBSP)
 
 myLauncher = "$($HOME/.cabal/bin/yeganesh -x -- -fn 'Monoid-8' -b)"
 
@@ -105,12 +121,13 @@ myModMask = mod4Mask
 
 myStartupHook hostname = do
   startupHook gnomeConfig
-  spawn "$HOME/.xmonad/scripts/olybarp.sh"
+  -- spawn "$HOME/.xmonad/scripts/olybarp.sh"
+  -- spawn "$HOME/.xmonad/scripts/int2t.sh"
   -- spawn "$HOME/bin/redmi"
   -- when (hostname == "shanes-archlaptop") $ spawn "$HOME/.xmonad/scripts/autolockx.sh"
-  -- spawn "$HOME/.xmonad/scripts/int2t.sh"
   spawn "$HOME/.xmonad/scripts/ay-night-switcherd.sh"
-  -- setWMName "LG3D"
+  -- 修复firefox全屏显示
+  setWMName "LG3D"
 
 scratchpads = [ NS "dropDownTerminal" "tabbed -c -n Drop-Down-Terminal alacritty -o window.opacity=0.80 --embed" (appName =? "Drop-Down-Terminal") (customFloating $ W.RationalRect (1/8) (0/6) (3/4) (2/3))
               ]
