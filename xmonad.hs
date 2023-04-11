@@ -142,7 +142,7 @@ main = do
                                 -- ,((mod1Mask .|. controlMask, xK_l), spawn $ if hostname == "archdesktop" then "dbus-send --type=method_call --dest=org.gnome.ScreenSaver /org/gnome/ScreenSaver org.gnome.ScreenSaver.Lock" else "xlock -mode rain")
                                 ((mod1Mask .|. controlMask, xK_l), spawn "dbus-send --type=method_call --dest=org.gnome.ScreenSaver /org/gnome/ScreenSaver org.gnome.ScreenSaver.Lock"),
                                 ((myModMask .|. shiftMask, xK_m), withFocused (sendMessage . maximizeRestore)),
-                                ((myModMask, xK_a), spawn "autorandr -c"),
+                                ((myModMask, xK_z), spawn "autorandr -c"),
                                 ((myModMask .|. controlMask, xK_t), namedScratchpadAction scratchpads "dropDownTerminal"),
                                 ((myModMask .|. mod1Mask, xK_l), sendMessage $ ExpandTowards R),
                                 ((myModMask .|. mod1Mask, xK_h), sendMessage $ ExpandTowards L),
@@ -155,8 +155,8 @@ main = do
                                 ((myModMask, xK_r), sendMessage Rotate),
                                 ((myModMask, xK_s), sendMessage Swap),
                                 ((myModMask .|. mod1Mask, xK_p), sendMessage FocusParent),
-                                ((myModMask, xK_z), sendMessage Balance),
-                                ((myModMask .|. shiftMask, xK_z), sendMessage Equalize)
+                                ((myModMask, xK_a), sendMessage Balance),
+                                ((myModMask .|. mod1Mask, xK_a), sendMessage Equalize)
                               ]
                        )
 
