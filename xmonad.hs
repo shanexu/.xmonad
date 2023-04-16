@@ -172,18 +172,15 @@ polybarLogHook dbus =
   def
     { ppCurrent = wrap "%{u#F0C674}%{+u}%{B#f6373B41} " " %{B-}%{-u}",
       ppLayout = drop 17,
-      ppHidden = \name ->
-        if name == "NSP"
-          then ""
-          else wrap ("%{A1:wmctrl -s " ++ nameToNo name ++ ":} ") " %{A}" name,
-      ppHiddenNoWindows = \name -> wrap ("%{A1:wmctrl -s " ++ nameToNo name ++ ":}%{F#707880} ") " %{F-}%{A}" name,
+      ppHidden = hideNsp $ \name -> wrap ("%{A1:wmctrl -s " ++ nameToNo name ++ ":} ") " %{A}" name,
+      ppHiddenNoWindows = hideNsp $ \name -> wrap ("%{A1:wmctrl -s " ++ nameToNo name ++ ":}%{F#707880} ") " %{F-}%{A}" name,
       ppWsSep = "",
       ppTitle = shorten 50,
       ppOutput = D.send dbus
     }
   where
     nameToNo name = show (((read name - 1) `mod` 10) :: Int)
-    hideNsp name mapper = if name == "NSP" then "" else mapper name
+    hideNsp mapper name = if name == "NSP" then "" else mapper name
 
 myLayout = smartBorders $ maximize $ borderResize $ smartSpacing 4 $ layoutHook gnomeConfig ||| desktopLayoutModifiers (ThreeColMid 1 (3 / 100) (1 / 2) ||| emptyBSP)
 
