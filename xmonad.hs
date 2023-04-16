@@ -110,16 +110,25 @@ main = do
     $ ewmhFullscreen . addEwmhWorkspaceSort (pure (filterOutWs [scratchpadWorkspaceTag]))
     $ gnomeConfig
       { modMask = myModMask,
-        logHook = dynamicLogWithPP (myLogHook dbus) <+> logHook gnomeConfig,
-        -- , terminal = "env GLFW_IM_MODULE=ibus kitty"
-        -- , terminal = "wezterm"
+        logHook =
+          dynamicLogWithPP (polybarLogHook dbus)
+            <+> ( dynamicLogString
+                    ( def
+                        { ppCurrent = xmobarColor "yellow" "" . wrap "[" "]",
+                          ppTitle = xmobarColor "green" "" . shorten 50,
+                          ppVisible = wrap "(" ")",
+                          ppUrgent = xmobarColor "red" "yellow",
+                          ppLayout = drop 17
+                        }
+                    )
+                    >>= xmonadPropLog
+                )
+            <+> logHook gnomeConfig,
         terminal = "tabbed -c alacritty --embed",
         workspaces = myWorkspaces,
         borderWidth = 6,
         focusFollowsMouse = True,
         layoutHook = myLayout,
-        -- , normalBorderColor = "#707880"
-        -- , focusedBorderColor = "#33AADD"
         normalBorderColor = "#555555",
         focusedBorderColor = "#f36864",
         handleEventHook = handleEventHook gnomeConfig,
@@ -139,7 +148,6 @@ main = do
                                 ((myModMask .|. shiftMask, xK_x), spawn "QT_AUTO_SCREEN_SCALE_FACTOR=0 flameshot gui"),
                                 ((myModMask .|. shiftMask, xK_v), spawn "copyq toggle"),
                                 ((myModMask, xK_backslash), spawn "1password --quick-access"),
-                                -- ,((mod1Mask .|. controlMask, xK_l), spawn $ if hostname == "archdesktop" then "dbus-send --type=method_call --dest=org.gnome.ScreenSaver /org/gnome/ScreenSaver org.gnome.ScreenSaver.Lock" else "xlock -mode rain")
                                 ((mod1Mask .|. controlMask, xK_l), spawn "dbus-send --type=method_call --dest=org.gnome.ScreenSaver /org/gnome/ScreenSaver org.gnome.ScreenSaver.Lock"),
                                 ((myModMask .|. shiftMask, xK_m), withFocused (sendMessage . maximizeRestore)),
                                 ((myModMask, xK_z), spawn "autorandr -c"),
@@ -160,21 +168,24 @@ main = do
                               ]
                        )
 
-myLogHook dbus =
+polybarLogHook dbus =
   def
-    { ppOutput =
-        \log -> do
-          let delimiter = T.pack " : "
-              (_, tail) = T.breakOn delimiter (T.pack log)
-              layout =
-                drop 20 $
-                  T.unpack tail
-          D.send dbus layout
+    { ppCurrent = wrap "%{u#F0C674}%{+u}%{B#f6373B41} " " %{B-}%{-u}",
+      ppLayout = drop 17,
+      ppHidden = \name ->
+        if name == "NSP"
+          then ""
+          else wrap ("%{A1:wmctrl -s " ++ nameToNo name ++ ":} ") " %{A}" name,
+      ppHiddenNoWindows = \name -> wrap ("%{A1:wmctrl -s " ++ nameToNo name ++ ":}%{F#707880} ") " %{F-}%{A}" name,
+      ppWsSep = "",
+      ppTitle = shorten 50,
+      ppOutput = D.send dbus
     }
+  where
+    nameToNo name = show (((read name - 1) `mod` 10) :: Int)
+    hideNsp name mapper = if name == "NSP" then "" else mapper name
 
 myLayout = smartBorders $ maximize $ borderResize $ smartSpacing 4 $ layoutHook gnomeConfig ||| desktopLayoutModifiers (ThreeColMid 1 (3 / 100) (1 / 2) ||| emptyBSP)
-
--- myLayout = smartBorders $ maximize $ borderResize $ layoutHook gnomeConfig ||| desktopLayoutModifiers (ThreeColMid 1 (3/100) (1/2) ||| emptyBSP)
 
 myLauncher = "$($HOME/.cabal/bin/yeganesh -x -- -fn 'Monoid-8' -b)"
 
@@ -182,13 +193,7 @@ myModMask = mod4Mask
 
 myStartupHook hostname = do
   startupHook gnomeConfig
-  -- spawn "$HOME/.xmonad/scripts/olybarp.sh"
-  -- spawn "$HOME/.xmonad/scripts/int2t.sh"
-  -- spawn "$HOME/bin/redmi"
-  -- when (hostname == "shanes-archlaptop") $ spawn "$HOME/.xmonad/scripts/autolockx.sh"
   spawn "$HOME/.config/xmonad/scripts/ay-night-switcherd.sh"
-
--- setWMName "LG3D"
 
 scratchpads =
   [ NS "dropDownTerminal" "tabbed -c -n Drop-Down-Terminal alacritty -o window.opacity=0.80 --embed" (appName =? "Drop-Down-Terminal") (customFloating $ W.RationalRect (1 / 8) (0 / 6) (3 / 4) (2 / 3))
