@@ -193,6 +193,7 @@ myModMask = mod4Mask
 myStartupHook hostname = do
   startupHook gnomeConfig
   spawn "$HOME/.config/xmonad/scripts/ay-night-switcherd.sh"
+  spawn "$HOME/.config/xmonad/scripts/bars.sh"
 
 scratchpads =
   [ NS "dropDownTerminal" "tabbed -c -n Drop-Down-Terminal alacritty -o window.opacity=0.80 --embed" (appName =? "Drop-Down-Terminal") (customFloating $ W.RationalRect (1 / 8) (0 / 6) (3 / 4) (2 / 3))
