@@ -160,8 +160,8 @@ main = do
                                 ((myModMask .|. mod1Mask .|. controlMask, xK_h), sendMessage $ ShrinkFrom L),
                                 ((myModMask .|. mod1Mask .|. controlMask, xK_j), sendMessage $ ShrinkFrom D),
                                 ((myModMask .|. mod1Mask .|. controlMask, xK_k), sendMessage $ ShrinkFrom U),
-                                ((myModMask, xK_r), sendMessage Rotate),
-                                ((myModMask, xK_s), sendMessage Swap),
+                                ((myModMask .|. mod1Mask, xK_r), sendMessage Rotate),
+                                ((myModMask .|. mod1Mask, xK_s), sendMessage Swap),
                                 ((myModMask .|. mod1Mask, xK_p), sendMessage FocusParent),
                                 ((myModMask, xK_a), sendMessage Balance),
                                 ((myModMask .|. mod1Mask, xK_a), sendMessage Equalize)
