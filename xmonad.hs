@@ -73,6 +73,7 @@ import XMonad.Hooks.ManageHelpers
     isFullscreen,
   )
 import XMonad.Hooks.Place (smart)
+import XMonad.Hooks.ServerMode (serverModeEventHook)
 import XMonad.Hooks.SetWMName
 import XMonad.Layout.BinarySpacePartition
 import XMonad.Layout.BorderResize
@@ -131,7 +132,7 @@ main = do
         layoutHook = myLayout,
         normalBorderColor = "#555555",
         focusedBorderColor = "#f36864",
-        handleEventHook = handleEventHook gnomeConfig,
+        handleEventHook = serverModeEventHook <+> handleEventHook gnomeConfig,
         startupHook = myStartupHook hostname,
         manageHook = myManageHook <+> manageHook gnomeConfig
       }
