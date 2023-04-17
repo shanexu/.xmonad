@@ -73,6 +73,7 @@ import XMonad.Hooks.ManageHelpers
     isFullscreen,
   )
 import XMonad.Hooks.Place (smart)
+import XMonad.Hooks.ServerMode (serverModeEventHook)
 import XMonad.Hooks.SetWMName
 import XMonad.Layout.BinarySpacePartition
 import XMonad.Layout.BorderResize
@@ -131,7 +132,7 @@ main = do
         layoutHook = myLayout,
         normalBorderColor = "#555555",
         focusedBorderColor = "#f36864",
-        handleEventHook = handleEventHook gnomeConfig,
+        handleEventHook = serverModeEventHook <+> handleEventHook gnomeConfig,
         startupHook = myStartupHook hostname,
         manageHook = myManageHook <+> manageHook gnomeConfig
       }
@@ -171,17 +172,19 @@ main = do
 polybarLogHook dbus =
   def
     { ppCurrent = wrap "%{u#F0C674}%{+u}%{B#f6373B41} " " %{B-}%{-u}",
-      ppVisible = hideNsp $ \name -> wrap ("%{A1:wmctrl -s " ++ nameToNo name ++ ":}%{B#f6373B41} ") " %{B-}%{A}" name, -- TODO refine action
-      ppLayout = drop 17,
-      ppHidden = hideNsp $ \name -> wrap ("%{A1:wmctrl -s " ++ nameToNo name ++ ":} ") " %{A}" name,
-      ppHiddenNoWindows = hideNsp $ \name -> wrap ("%{A1:wmctrl -s " ++ nameToNo name ++ ":}%{F#707880} ") " %{F-}%{A}" name,
-      ppVisibleNoWindows = Just $ hideNsp $ \name -> wrap ("%{A1:wmctrl -s " ++ nameToNo name ++ ":}%{B#f6373B41}%{F#707880} ") " %{F-}%{B-}%{A}" name,
+      ppVisible = hideNsp $ \name -> wrap ("%{A1:xmonadctl " ++ nameToCmdNo name ++ ":}%{B#f6373B41} ") " %{B-}%{A}" name, -- TODO refine action
+      ppLayout = wrap "%{A1:xmonadctl 27:}%{F#F0C674}%{T4}\59255%{T-}%{F-} " "%{A}" . drop 17,
+      ppHidden = hideNsp $ \name -> wrap ("%{A1:xmonadctl " ++ nameToCmdNo name ++ ":} ") " %{A}" name,
+      ppHiddenNoWindows = hideNsp $ \name -> wrap ("%{A1:xmonadctl " ++ nameToCmdNo name ++ ":}%{F#707880} ") " %{F-}%{A}" name,
+      ppVisibleNoWindows = Just $ hideNsp $ \name -> wrap ("%{A1:xmonadctl " ++ nameToCmdNo name ++ ":}%{B#f6373B41}%{F#707880} ") " %{F-}%{B-}%{A}" name,
       ppWsSep = "",
+      ppSep = "%{F#707880} | %{F-}",
       ppTitle = shorten 50,
       ppOutput = D.send dbus
     }
   where
     nameToNo name = show (((read name - 1) `mod` 10) :: Int)
+    nameToCmdNo name = show (((read name - 1) `mod` 10) * 2 + 1 :: Int)
     hideNsp mapper name = if name == "NSP" then "" else mapper name
 
 myLayout = smartBorders $ maximize $ borderResize $ smartSpacing 4 $ layoutHook gnomeConfig ||| desktopLayoutModifiers (ThreeColMid 1 (3 / 100) (1 / 2) ||| emptyBSP)
