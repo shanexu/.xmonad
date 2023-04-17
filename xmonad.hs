@@ -171,9 +171,11 @@ main = do
 polybarLogHook dbus =
   def
     { ppCurrent = wrap "%{u#F0C674}%{+u}%{B#f6373B41} " " %{B-}%{-u}",
+      ppVisible = hideNsp $ \name -> wrap ("%{A1:wmctrl -s " ++ nameToNo name ++ ":} ") " %{A}" name, -- TODO refine
       ppLayout = drop 17,
       ppHidden = hideNsp $ \name -> wrap ("%{A1:wmctrl -s " ++ nameToNo name ++ ":} ") " %{A}" name,
       ppHiddenNoWindows = hideNsp $ \name -> wrap ("%{A1:wmctrl -s " ++ nameToNo name ++ ":}%{F#707880} ") " %{F-}%{A}" name,
+      ppVisibleNoWindows = Just $ hideNsp $ \name -> wrap ("%{A1:wmctrl -s " ++ nameToNo name ++ ":}%{F#707880} ") " %{F-}%{A}" name, -- TODO refine
       ppWsSep = "",
       ppTitle = shorten 50,
       ppOutput = D.send dbus
