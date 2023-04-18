@@ -58,6 +58,7 @@ import XMonad
     (=?),
     (|||),
   )
+import XMonad.Actions.Commands (defaultCommands)
 import XMonad.Actions.CopyWindow (copyToAll)
 import XMonad.Actions.CycleWS (Direction1D (Next, Prev))
 import XMonad.Actions.Navigation2D
@@ -73,7 +74,7 @@ import XMonad.Hooks.ManageHelpers
     isFullscreen,
   )
 import XMonad.Hooks.Place (smart)
-import XMonad.Hooks.ServerMode (serverModeEventHook)
+import XMonad.Hooks.ServerMode (serverModeEventHook, serverModeEventHook')
 import XMonad.Hooks.SetWMName
 import XMonad.Layout.BinarySpacePartition
 import XMonad.Layout.BorderResize
@@ -132,7 +133,14 @@ main = do
         layoutHook = myLayout,
         normalBorderColor = "#555555",
         focusedBorderColor = "#f36864",
-        handleEventHook = serverModeEventHook <+> handleEventHook gnomeConfig,
+        handleEventHook =
+          serverModeEventHook'
+            ( defaultCommands >>= \cmds ->
+                return $
+                  cmds
+                    ++ [("greedyView " ++ ws, windows $ W.greedyView ws) | ws <- myWorkspaces]
+            )
+            <+> handleEventHook gnomeConfig,
         startupHook = myStartupHook hostname,
         manageHook = myManageHook <+> manageHook gnomeConfig
       }
@@ -183,8 +191,7 @@ polybarLogHook dbus =
       ppOutput = D.send dbus
     }
   where
-    nameToNo name = show (((read name - 1) `mod` 10) :: Int)
-    nameToCmdNo name = show (((read name - 1) `mod` 10) * 2 + 1 :: Int)
+    nameToCmdNo name = show (((read name - 1) `mod` 10) + 42 :: Int)
     hideNsp mapper name = if name == "NSP" then "" else mapper name
 
 myLayout = smartBorders $ maximize $ borderResize $ smartSpacing 4 $ layoutHook gnomeConfig ||| desktopLayoutModifiers (ThreeColMid 1 (3 / 100) (1 / 2) ||| emptyBSP)
@@ -196,7 +203,8 @@ myModMask = mod4Mask
 myStartupHook hostname = do
   startupHook gnomeConfig
   spawn "$HOME/.config/xmonad/scripts/ay-night-switcherd.sh"
-  spawn "$HOME/.config/xmonad/scripts/bars.sh"
+
+-- spawn "$HOME/.config/xmonad/scripts/bars.sh"
 
 scratchpads =
   [ NS "dropDownTerminal" "tabbed -c -n Drop-Down-Terminal alacritty -o window.opacity=0.80 --embed" (appName =? "Drop-Down-Terminal") (customFloating $ W.RationalRect (1 / 8) (0 / 6) (3 / 4) (2 / 3))
