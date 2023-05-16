@@ -42,6 +42,7 @@ import XMonad
     xK_k,
     xK_l,
     xK_m,
+    xK_n,
     xK_p,
     xK_r,
     xK_s,
@@ -126,7 +127,7 @@ main = do
                     >>= xmonadPropLog
                 )
             <+> logHook gnomeConfig,
-        terminal = "tabbed -c alacritty --embed",
+        terminal = "tabbed -n tabbed-alacritty -c alacritty --embed",
         workspaces = myWorkspaces,
         borderWidth = 6,
         focusFollowsMouse = True,
@@ -161,6 +162,7 @@ main = do
                                 ((myModMask .|. shiftMask, xK_m), withFocused (sendMessage . maximizeRestore)),
                                 ((myModMask, xK_z), spawn "autorandr -c"),
                                 ((myModMask .|. controlMask, xK_t), namedScratchpadAction scratchpads "dropDownTerminal"),
+                                -- bsp
                                 ((myModMask .|. mod1Mask, xK_l), sendMessage $ ExpandTowards R),
                                 ((myModMask .|. mod1Mask, xK_h), sendMessage $ ExpandTowards L),
                                 ((myModMask .|. mod1Mask, xK_j), sendMessage $ ExpandTowards D),
@@ -169,9 +171,13 @@ main = do
                                 ((myModMask .|. mod1Mask .|. controlMask, xK_h), sendMessage $ ShrinkFrom L),
                                 ((myModMask .|. mod1Mask .|. controlMask, xK_j), sendMessage $ ShrinkFrom D),
                                 ((myModMask .|. mod1Mask .|. controlMask, xK_k), sendMessage $ ShrinkFrom U),
-                                ((myModMask .|. mod1Mask, xK_r), sendMessage Rotate),
-                                ((myModMask .|. mod1Mask, xK_s), sendMessage Swap),
-                                ((myModMask .|. mod1Mask, xK_p), sendMessage FocusParent),
+                                ((myModMask, xK_r), sendMessage Rotate),
+                                ((myModMask, xK_s), sendMessage Swap),
+                                ((myModMask, xK_n), sendMessage FocusParent),
+                                ((myModMask .|. controlMask, xK_n), sendMessage SelectNode),
+                                ((myModMask .|. shiftMask, xK_n), sendMessage MoveNode),
+                                ((myModMask .|. shiftMask .|. controlMask, xK_j), sendMessage $ SplitShift Prev),
+                                ((myModMask .|. shiftMask .|. controlMask, xK_k), sendMessage $ SplitShift Next),
                                 ((myModMask, xK_a), sendMessage Balance),
                                 ((myModMask .|. mod1Mask, xK_a), sendMessage Equalize)
                               ]
@@ -187,7 +193,7 @@ polybarLogHook dbus =
       ppVisibleNoWindows = Just $ hideNsp $ \name -> wrap ("%{A1:xmonadctl " ++ nameToCmdNo name ++ ":}%{B#f6373B41}%{F#707880} ") " %{F-}%{B-}%{A}" name,
       ppWsSep = "",
       ppSep = "%{F#707880} | %{F-}",
-      ppTitle = shorten 50,
+      ppTitle = wrap "%{T3}\xeb7f%{T-} " "" . shorten 50,
       ppOutput = D.send dbus
     }
   where
