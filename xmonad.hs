@@ -57,7 +57,7 @@ import XMonad
     (<&&>),
     (<+>),
     (=?),
-    (|||),
+    (|||), JumpToLayout (JumpToLayout),
   )
 import XMonad.Actions.Commands (defaultCommands)
 import XMonad.Actions.CopyWindow (copyToAll)
@@ -80,6 +80,7 @@ import XMonad.Hooks.SetWMName
 import XMonad.Layout.BinarySpacePartition
 import XMonad.Layout.BorderResize
 import XMonad.Layout.Maximize
+import XMonad.Layout.MultiToggle
 import XMonad.Layout.NoBorders
 import XMonad.Layout.Spacing
 import XMonad.Layout.Tabbed (tabbed)
@@ -96,6 +97,7 @@ import XMonad.Util.NamedScratchpad
 import XMonad.Util.SpawnOnce
 import XMonad.Util.Themes (ThemeInfo (theme))
 import XMonad.Util.WorkspaceCompare (filterOutWs)
+import XMonad.Layout.MultiToggle.Instances (StdTransformers(FULL, NOBORDERS))
 
 main :: IO ()
 main = do
@@ -159,6 +161,7 @@ main = do
                                 ((myModMask .|. shiftMask, xK_v), spawn "copyq toggle"),
                                 ((myModMask, xK_backslash), spawn "1password --quick-access"),
                                 ((mod1Mask .|. controlMask, xK_l), spawn "dbus-send --type=method_call --dest=org.gnome.ScreenSaver /org/gnome/ScreenSaver org.gnome.ScreenSaver.Lock"),
+                                ((myModMask, xK_m), sendMessage $ Toggle FULL),
                                 ((myModMask .|. shiftMask, xK_m), withFocused (sendMessage . maximizeRestore)),
                                 ((myModMask, xK_z), spawn "autorandr -c"),
                                 ((myModMask .|. controlMask, xK_t), namedScratchpadAction scratchpads "dropDownTerminal"),
@@ -200,7 +203,7 @@ polybarLogHook dbus =
     nameToCmdNo name = show (((read name - 1) `mod` 10) + 42 :: Int)
     hideNsp mapper name = if name == "NSP" then "" else mapper name
 
-myLayout = smartBorders $ maximize $ borderResize $ smartSpacing 4 $ layoutHook gnomeConfig ||| desktopLayoutModifiers (ThreeColMid 1 (3 / 100) (1 / 2) ||| emptyBSP)
+myLayout = smartBorders $ mkToggle (NOBORDERS ?? FULL ?? EOT) $ maximize $ borderResize $ smartSpacing 4 $ layoutHook gnomeConfig ||| desktopLayoutModifiers (ThreeColMid 1 (3 / 100) (1 / 2) ||| emptyBSP)
 
 myLauncher = "$($HOME/.cabal/bin/yeganesh -x -- -fn 'Monoid-8' -b)"
 
