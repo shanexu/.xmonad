@@ -65,7 +65,8 @@ import XMonad.Actions.CycleWS (Direction1D (Next, Prev))
 import XMonad.Actions.Navigation2D
 import XMonad.Actions.NoBorders
 import XMonad.Config.Desktop
-import XMonad.Config.Gnome
+import XMonad.Config.Gnome (gnomeConfig)
+import XMonad.Config.Xfce (xfceConfig)
 import XMonad.DBus qualified as D
 import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.EwmhDesktops
@@ -98,9 +99,11 @@ import XMonad.Util.SpawnOnce
 import XMonad.Util.Themes (ThemeInfo (theme))
 import XMonad.Util.WorkspaceCompare (filterOutWs)
 import XMonad.Layout.MultiToggle.Instances (StdTransformers(FULL, NOBORDERS))
+import System.Environment (getEnv)
 
 main :: IO ()
 main = do
+  desktopSession <- getEnv "DESKTOP_SESSION"
   hostname <- getHostName
   dbus <- D.connect
   D.requestAccess dbus
@@ -113,7 +116,7 @@ main = do
       ]
       False
     $ ewmhFullscreen . addEwmhWorkspaceSort (pure (filterOutWs [scratchpadWorkspaceTag]))
-    $ gnomeConfig
+    $ (myDesktopConfig desktopSession)
       { modMask = myModMask,
         logHook =
           dynamicLogWithPP (polybarLogHook dbus)
@@ -128,12 +131,12 @@ main = do
                     )
                     >>= xmonadPropLog
                 )
-            <+> logHook gnomeConfig,
+            <+> logHook (myDesktopConfig desktopSession),
         terminal = "tabbed -n tabbed-alacritty -c alacritty --embed",
         workspaces = myWorkspaces,
         borderWidth = 6,
         focusFollowsMouse = True,
-        layoutHook = myLayout,
+        layoutHook = myLayout desktopSession,
         normalBorderColor = "#555555",
         focusedBorderColor = "#f36864",
         handleEventHook =
@@ -143,9 +146,9 @@ main = do
                   cmds
                     ++ [("greedyView " ++ ws, windows $ W.greedyView ws) | ws <- myWorkspaces]
             )
-            <+> handleEventHook gnomeConfig,
-        startupHook = myStartupHook hostname,
-        manageHook = myManageHook <+> manageHook gnomeConfig
+            <+> handleEventHook (myDesktopConfig desktopSession),
+        startupHook = myStartupHook hostname desktopSession,
+        manageHook = myManageHook <+> manageHook (myDesktopConfig desktopSession)
       }
       `additionalKeys` ( [((myModMask, key), windows $ W.greedyView ws) | (key, ws) <- myExtraWorkspaces]
                            ++ [((myModMask .|. shiftMask, key), windows $ W.shift ws) | (key, ws) <- myExtraWorkspaces]
@@ -160,7 +163,7 @@ main = do
                                 ((myModMask .|. shiftMask, xK_x), spawn "QT_AUTO_SCREEN_SCALE_FACTOR=0 flameshot gui"),
                                 ((myModMask .|. shiftMask, xK_v), spawn "copyq toggle"),
                                 ((myModMask, xK_backslash), spawn "1password --quick-access"),
-                                ((mod1Mask .|. controlMask, xK_l), spawn "dbus-send --type=method_call --dest=org.gnome.ScreenSaver /org/gnome/ScreenSaver org.gnome.ScreenSaver.Lock"),
+                                ((mod1Mask .|. controlMask, xK_l), spawn $ if desktopSession == "xfce" then "xflock4" else "dbus-send --type=method_call --dest=org.gnome.ScreenSaver /org/gnome/ScreenSaver org.gnome.ScreenSaver.Lock"),
                                 ((myModMask, xK_m), sendMessage $ Toggle FULL),
                                 ((myModMask .|. shiftMask, xK_m), withFocused (sendMessage . maximizeRestore)),
                                 ((myModMask, xK_z), spawn "autorandr -c"),
@@ -203,14 +206,14 @@ polybarLogHook dbus =
     nameToCmdNo name = show (((read name - 1) `mod` 10) + 42 :: Int)
     hideNsp mapper name = if name == "NSP" then "" else mapper name
 
-myLayout = smartBorders $ mkToggle (NOBORDERS ?? FULL ?? EOT) $ maximize $ borderResize $ smartSpacing 4 $ layoutHook gnomeConfig ||| desktopLayoutModifiers (ThreeColMid 1 (3 / 100) (1 / 2) ||| emptyBSP)
+myLayout desktopSession = smartBorders $ mkToggle (NOBORDERS ?? FULL ?? EOT) $ maximize $ borderResize $ smartSpacing 4 $ layoutHook (myDesktopConfig desktopSession) ||| desktopLayoutModifiers (ThreeColMid 1 (3 / 100) (1 / 2) ||| emptyBSP)
 
 myLauncher = "$($HOME/.cabal/bin/yeganesh -x -- -fn 'Monoid-8' -b)"
 
 myModMask = mod4Mask
 
-myStartupHook hostname = do
-  startupHook gnomeConfig
+myStartupHook hostname desktopSession = do
+  startupHook (myDesktopConfig desktopSession)
   spawn "$HOME/.config/xmonad/scripts/ay-night-switcherd.sh"
 
 -- spawn "$HOME/.config/xmonad/scripts/bars.sh"
@@ -247,3 +250,6 @@ myWorkspaces = miscs 9 ++ ["0"]
     miscs = map (("" ++) . show) . flip take [1 ..]
 
 myExtraWorkspaces = [(xK_0, "0")]
+
+myDesktopConfig desktopSession =
+  if desktopSession == "xfce" then xfceConfig else gnomeConfig
