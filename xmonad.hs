@@ -73,7 +73,7 @@ import XMonad.Hooks.EwmhDesktops
 import XMonad.Hooks.ManageHelpers
   ( doCenterFloat,
     doFullFloat,
-    isFullscreen,
+    isFullscreen, doHideIgnore,
   )
 import XMonad.Hooks.Place (smart)
 import XMonad.Hooks.ServerMode (serverModeEventHook, serverModeEventHook')
@@ -118,23 +118,10 @@ main = do
     $ ewmhFullscreen . addEwmhWorkspaceSort (pure (filterOutWs [scratchpadWorkspaceTag]))
     $ (myDesktopConfig desktopSession)
       { modMask = myModMask,
-        logHook =
-          dynamicLogWithPP (polybarLogHook dbus)
-            <+> ( dynamicLogString
-                    ( def
-                        { ppCurrent = xmobarColor "yellow" "" . wrap "[" "]",
-                          ppTitle = xmobarColor "green" "" . shorten 50,
-                          ppVisible = wrap "(" ")",
-                          ppUrgent = xmobarColor "red" "yellow",
-                          ppLayout = drop 17
-                        }
-                    )
-                    >>= xmonadPropLog
-                )
-            <+> logHook (myDesktopConfig desktopSession),
+        logHook = dynamicLogWithPP (polybarLogHook dbus) <+> logHook (myDesktopConfig desktopSession),
         terminal = "tabbed -n tabbed-alacritty -c alacritty --embed",
         workspaces = myWorkspaces,
-        borderWidth = 6,
+        borderWidth = 4,
         focusFollowsMouse = True,
         layoutHook = myLayout desktopSession,
         normalBorderColor = "#555555",
@@ -157,8 +144,8 @@ main = do
                                   (f, m) <- [(W.view, 0), (W.shift, shiftMask)]
                               ]
                            ++ [ ((myModMask, xK_g), withFocused toggleBorder),
-                                ((myModMask, xK_p), spawn "rofi -combi-modi window,drun,run -show combi -font 'Cascadia Code 14' -icon-theme 'Fluent' -show-icons -dpi 144"),
-                                ((myModMask .|. shiftMask, xK_p), spawn "rofi -show window -font 'Cascadia Code 14' -icon-theme 'Fluent' -show-icons -dpi 144"),
+                                ((myModMask, xK_p), spawn "rofi -combi-modi window,drun,run -show combi -font 'CaskaydiaCove Nerd Font 14' -icon-theme 'Fluent' -show-icons -dpi 144"),
+                                ((myModMask .|. shiftMask, xK_p), spawn "rofi -show window -font 'CaskaydiaCove Nerd Font 14' -icon-theme 'Fluent' -show-icons -dpi 144"),
                                 ((myModMask, xK_x), spawn "QT_AUTO_SCREEN_SCALE_FACTOR=0 flameshot full -c"),
                                 ((myModMask .|. shiftMask, xK_x), spawn "QT_AUTO_SCREEN_SCALE_FACTOR=0 flameshot gui"),
                                 ((myModMask .|. shiftMask, xK_v), spawn "copyq toggle"),
@@ -206,7 +193,7 @@ polybarLogHook dbus =
     nameToCmdNo name = show (((read name - 1) `mod` 10) + 42 :: Int)
     hideNsp mapper name = if name == "NSP" then "" else mapper name
 
-myLayout desktopSession = smartBorders $ mkToggle (NOBORDERS ?? FULL ?? EOT) $ maximize $ borderResize $ smartSpacing 4 $ layoutHook (myDesktopConfig desktopSession) ||| desktopLayoutModifiers (ThreeColMid 1 (3 / 100) (1 / 2) ||| emptyBSP)
+myLayout desktopSession = smartBorders $ mkToggle (NOBORDERS ?? FULL ?? EOT) $ maximize $ borderResize $ smartSpacing 0 $ layoutHook (myDesktopConfig desktopSession) ||| desktopLayoutModifiers (ThreeColMid 1 (3 / 100) (1 / 2) ||| emptyBSP)
 
 myLauncher = "$($HOME/.cabal/bin/yeganesh -x -- -fn 'Monoid-8' -b)"
 
@@ -214,9 +201,8 @@ myModMask = mod4Mask
 
 myStartupHook hostname desktopSession = do
   startupHook (myDesktopConfig desktopSession)
-  spawn "$HOME/.config/xmonad/scripts/ay-night-switcherd.sh"
-
--- spawn "$HOME/.config/xmonad/scripts/bars.sh"
+  -- spawn "$HOME/.config/xmonad/scripts/ay-night-switcherd.sh"
+  -- spawn "$HOME/.config/xmonad/scripts/bars.sh"
 
 scratchpads =
   [ NS "dropDownTerminal" "tabbed -c -n Drop-Down-Terminal alacritty -o window.opacity=0.80 --embed" (appName =? "Drop-Down-Terminal") (customFloating $ W.RationalRect (1 / 8) (0 / 6) (3 / 4) (2 / 3))
@@ -242,7 +228,8 @@ myManageHook =
         title =? "Run Application" --> doFloat,
         title =? "Log Out" --> doFloat,
         title =? "歌词" --> hasBorder False >> doF W.focusDown <+> doF copyToAll,
-        isFullscreen --> doFullFloat
+        isFullscreen --> doFullFloat,
+        title =? "" <&&> className =? "Wine" --> doHideIgnore
       ]
 
 myWorkspaces = miscs 9 ++ ["0"]
