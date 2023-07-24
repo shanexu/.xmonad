@@ -73,7 +73,7 @@ import XMonad.Hooks.EwmhDesktops
 import XMonad.Hooks.ManageHelpers
   ( doCenterFloat,
     doFullFloat,
-    isFullscreen, doHideIgnore,
+    isFullscreen,
   )
 import XMonad.Hooks.Place (smart)
 import XMonad.Hooks.ServerMode (serverModeEventHook, serverModeEventHook')
