@@ -164,7 +164,7 @@ main = do
                                 ((myModMask .|. mod1Mask .|. controlMask, xK_h), sendMessage $ ShrinkFrom L),
                                 ((myModMask .|. mod1Mask .|. controlMask, xK_j), sendMessage $ ShrinkFrom D),
                                 ((myModMask .|. mod1Mask .|. controlMask, xK_k), sendMessage $ ShrinkFrom U),
-                                ((myModMask, xK_r), sendMessage Rotate),
+                                ((myModMask .|. mod1Mask, xK_r), sendMessage Rotate),
                                 ((myModMask, xK_s), sendMessage Swap),
                                 ((myModMask, xK_n), sendMessage FocusParent),
                                 ((myModMask .|. controlMask, xK_n), sendMessage SelectNode),
@@ -229,7 +229,7 @@ myManageHook =
         title =? "Log Out" --> doFloat,
         title =? "歌词" --> hasBorder False >> doF W.focusDown <+> doF copyToAll,
         isFullscreen --> doFullFloat,
-        title =? "" <&&> className =? "Wine" --> doHideIgnore
+        title =? "" <&&> className =? "Wine" --> doIgnore
       ]
 
 myWorkspaces = miscs 9 ++ ["0"]
