@@ -100,6 +100,7 @@ import XMonad.Util.Themes (ThemeInfo (theme))
 import XMonad.Util.WorkspaceCompare (filterOutWs)
 import XMonad.Layout.MultiToggle.Instances (StdTransformers(FULL, NOBORDERS))
 import System.Environment (getEnv)
+import Data.Binary (Word32)
 
 main :: IO ()
 main = do
@@ -121,7 +122,7 @@ main = do
         logHook = dynamicLogWithPP (polybarLogHook dbus) <+> logHook (myDesktopConfig desktopSession),
         terminal = "tabbed -n tabbed-alacritty -c alacritty --embed",
         workspaces = myWorkspaces,
-        borderWidth = 4,
+        borderWidth = myBorderWidth hostname,
         focusFollowsMouse = True,
         layoutHook = myLayout desktopSession,
         normalBorderColor = "#555555",
@@ -240,3 +241,8 @@ myExtraWorkspaces = [(xK_0, "0")]
 
 myDesktopConfig desktopSession =
   if desktopSession == "xfce" then xfceConfig else gnomeConfig
+
+myBorderWidth :: HostName -> Word32
+myBorderWidth "archdesktop" = 6
+myBorderWidth "archlaptop" = 6
+myBorderWidth _ = 4
