@@ -73,7 +73,7 @@ import XMonad.Hooks.EwmhDesktops
 import XMonad.Hooks.ManageHelpers
   ( doCenterFloat,
     doFullFloat,
-    isFullscreen,
+    isFullscreen, doLower,
   )
 import XMonad.Hooks.Place (smart)
 import XMonad.Hooks.ServerMode (serverModeEventHook, serverModeEventHook')
@@ -230,7 +230,8 @@ myManageHook =
         title =? "Log Out" --> doFloat,
         title =? "歌词" --> hasBorder False >> doF W.focusDown <+> doF copyToAll,
         isFullscreen --> doFullFloat,
-        title =? "" <&&> className =? "Wine" --> doIgnore
+        title =? "" <&&> className =? "Wine" --> doIgnore,
+        className =? "Xfce4-notifyd" --> doIgnore
       ]
 
 myWorkspaces = miscs 9 ++ ["0"]
