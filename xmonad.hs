@@ -181,7 +181,7 @@ polybarLogHook dbus =
   def
     { ppCurrent = wrap "%{u#F0C674}%{+u}%{B#f6373B41} " " %{B-}%{-u}",
       ppVisible = hideNsp $ \name -> wrap ("%{A1:xmonadctl " ++ nameToCmdNo name ++ ":}%{B#f6373B41} ") " %{B-}%{A}" name,
-      ppLayout = wrap "%{A1:xmonadctl 27:}%{F#fd4d5e}%{T6}\xe800%{T-}%{F-} " "%{A}" . drop 17,
+      ppLayout = wrap "%{A1:xmonadctl 27:}%{F#fd4d5e}%{T6}\xe800%{T-}%{F-} " "%{A}" . (\x -> if x == "" then "Toggle Full" else x) . drop 17,
       ppHidden = hideNsp $ \name -> wrap ("%{A1:xmonadctl " ++ nameToCmdNo name ++ ":} ") " %{A}" name,
       ppHiddenNoWindows = hideNsp $ \name -> wrap ("%{A1:xmonadctl " ++ nameToCmdNo name ++ ":}%{F#707880} ") " %{F-}%{A}" name,
       ppVisibleNoWindows = Just $ hideNsp $ \name -> wrap ("%{A1:xmonadctl " ++ nameToCmdNo name ++ ":}%{B#f6373B41}%{F#707880} ") " %{F-}%{B-}%{A}" name,
