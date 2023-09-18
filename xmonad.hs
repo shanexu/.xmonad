@@ -231,7 +231,8 @@ myManageHook =
         title =? "歌词" --> hasBorder False >> doF W.focusDown <+> doF copyToAll,
         isFullscreen --> doFullFloat,
         title =? "" <&&> className =? "Wine" --> doIgnore,
-        className =? "Xfce4-notifyd" --> doIgnore
+        className =? "Xfce4-notifyd" --> doIgnore,
+        className =? "Wrapper-2.0" --> doFloat
       ]
 
 myWorkspaces = miscs 9 ++ ["0"]
