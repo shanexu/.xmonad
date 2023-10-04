@@ -13,7 +13,7 @@ while true; do
         break
     elif echo "$output"  | grep -q 'DP-2 connected primary 5120x2880+0+0 (normal left inverted right x axis y axis) 609mm x 349mm'
     then
-        command=$'polybar -r topbar &\nstalonetray --geometry 1x1+4550+0 &\n'
+        command=$'polybar -r topbar &\nstalonetray --geometry 1x1-535+0 &\n'
         break
     else
         sleep 1
