@@ -145,8 +145,8 @@ main = do
                                   (f, m) <- [(W.view, 0), (W.shift, shiftMask)]
                               ]
                            ++ [ ((myModMask, xK_g), withFocused toggleBorder),
-                                ((myModMask, xK_p), spawn "rofi -combi-modi window,drun,run -show combi -font 'CaskaydiaCove Nerd Font 14' -icon-theme 'Fluent' -show-icons -dpi 144"),
-                                ((myModMask .|. shiftMask, xK_p), spawn "rofi -show window -font 'CaskaydiaCove Nerd Font 14' -icon-theme 'Fluent' -show-icons -dpi 144"),
+                                ((myModMask, xK_p), spawn "rofi -combi-modi window,drun,run -show combi -show-icons -dpi 144"),
+                                ((myModMask .|. shiftMask, xK_p), spawn "rofi -show window -show-icons -dpi 144"),
                                 ((myModMask, xK_x), spawn "QT_AUTO_SCREEN_SCALE_FACTOR=0 flameshot full -c"),
                                 ((myModMask .|. shiftMask, xK_x), spawn "QT_AUTO_SCREEN_SCALE_FACTOR=0 flameshot gui"),
                                 ((myModMask .|. shiftMask, xK_v), spawn "copyq toggle"),
