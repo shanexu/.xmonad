@@ -156,6 +156,7 @@ main = do
                                 ((myModMask .|. shiftMask, xK_m), withFocused (sendMessage . maximizeRestore)),
                                 ((myModMask, xK_z), spawn "autorandr -c"),
                                 ((myModMask .|. controlMask, xK_t), namedScratchpadAction scratchpads "dropDownTerminal"),
+                                ((myModMask .|. controlMask, xK_c), namedScratchpadAction scratchpads "chatbox"),
                                 -- bsp
                                 ((myModMask .|. mod1Mask, xK_l), sendMessage $ ExpandTowards R),
                                 ((myModMask .|. mod1Mask, xK_h), sendMessage $ ExpandTowards L),
@@ -206,7 +207,8 @@ myStartupHook hostname desktopSession = do
   -- spawn "$HOME/.config/xmonad/scripts/bars.sh"
 
 scratchpads =
-  [ NS "dropDownTerminal" "tabbed -c -n Drop-Down-Terminal alacritty -o window.opacity=0.80 --embed" (appName =? "Drop-Down-Terminal") (customFloating $ W.RationalRect (1 / 8) (0 / 6) (3 / 4) (2 / 3))
+  [ NS "dropDownTerminal" "tabbed -c -n Drop-Down-Terminal alacritty -o window.opacity=0.80 --embed" (appName =? "Drop-Down-Terminal") (customFloating $ W.RationalRect (1 / 8) (0 / 6) (3 / 4) (2 / 3)),
+    NS "chatbox" "chatbox" (appName =? "xyz.chatboxapp.app") (customFloating $ W.RationalRect (1 / 8) (0 / 6) (3 / 4) (2 / 3))
   ]
   where
     role = stringProperty "WM_WINDOW_ROLE"
