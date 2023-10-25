@@ -232,7 +232,8 @@ myManageHook =
         title =? "Log Out" --> doFloat,
         title =? "歌词" --> hasBorder False >> doF W.focusDown <+> doF copyToAll,
         isFullscreen --> doFullFloat,
-        title =? "" <&&> className =? "Wine" --> doIgnore,
+        title =? "" <&&> className =? "Wine" --> doIgnore, -- wine微信
+        title =? "EmojiFloatWnd" --> doFloat, -- 腾讯会议
         className =? "Xfce4-notifyd" --> doIgnore,
         className =? "Wrapper-2.0" --> doFloat
       ]
