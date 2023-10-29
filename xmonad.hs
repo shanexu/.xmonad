@@ -203,6 +203,7 @@ myModMask = mod4Mask
 
 myStartupHook hostname desktopSession = do
   startupHook (myDesktopConfig desktopSession)
+  setWMName "LG3D"
   -- spawn "$HOME/.config/xmonad/scripts/ay-night-switcherd.sh"
   -- spawn "$HOME/.config/xmonad/scripts/bars.sh"
 
