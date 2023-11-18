@@ -217,7 +217,7 @@ scratchpads =
 myManageHook =
   namedScratchpadManageHook scratchpads
     <+> composeAll
-      [ className =? "mpv" --> doFloat,
+      [ -- className =? "mpv" --> doFloat,
         className =? "MComix" --> doFloat,
         className =? "Gnome-mpv" --> doFloat,
         className =? "Gnome-tweaks" --> doFloat,
