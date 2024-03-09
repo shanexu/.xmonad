@@ -33,6 +33,7 @@ import XMonad
     xK_Right,
     xK_Up,
     xK_a,
+    xK_b,
     xK_backslash,
     xK_c,
     xK_e,
@@ -57,7 +58,7 @@ import XMonad
     (<&&>),
     (<+>),
     (=?),
-    (|||), JumpToLayout (JumpToLayout),
+    (|||), JumpToLayout (JumpToLayout), XConf (config),
   )
 import XMonad.Actions.Commands (defaultCommands)
 import XMonad.Actions.CopyWindow (copyToAll)
@@ -158,6 +159,7 @@ main = do
                                 ((myModMask, xK_z), spawn "autorandr -c"),
                                 ((myModMask .|. controlMask, xK_t), namedScratchpadAction scratchpads "dropDownTerminal"),
                                 ((myModMask .|. controlMask, xK_c), namedScratchpadAction scratchpads "chatbox"),
+                                ((myModMask, xK_b), spawn "/home/shane/.config/xmonad/scripts/bars.sh"),
                                 -- bsp
                                 ((myModMask .|. mod1Mask, xK_l), sendMessage $ ExpandTowards R),
                                 ((myModMask .|. mod1Mask, xK_h), sendMessage $ ExpandTowards L),
