@@ -159,7 +159,7 @@ main = do
                                 ((myModMask, xK_z), spawn "autorandr -c"),
                                 ((myModMask .|. controlMask, xK_t), namedScratchpadAction scratchpads "dropDownTerminal"),
                                 ((myModMask .|. controlMask, xK_c), namedScratchpadAction scratchpads "chatbox"),
-                                ((myModMask, xK_b), spawn "/home/shane/.config/xmonad/scripts/bars.sh"),
+                                ((myModMask, xK_b), spawn "$HOME/.config/xmonad/scripts/bars.sh"),
                                 -- bsp
                                 ((myModMask .|. mod1Mask, xK_l), sendMessage $ ExpandTowards R),
                                 ((myModMask .|. mod1Mask, xK_h), sendMessage $ ExpandTowards L),
