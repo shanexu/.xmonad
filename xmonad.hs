@@ -101,6 +101,7 @@ import XMonad.Util.WorkspaceCompare (filterOutWs)
 import XMonad.Layout.MultiToggle.Instances (StdTransformers(FULL, NOBORDERS))
 import System.Environment (getEnv)
 import Data.Binary (Word32)
+import Text.Read (readMaybe)
 
 main :: IO ()
 main = do
@@ -192,7 +193,9 @@ polybarLogHook dbus =
       ppOutput = D.send dbus
     }
   where
-    nameToCmdNo name = show (((read name - 1) `mod` 10) + 42 :: Int)
+    nameToCmdNo name = show ((case readMaybe name of
+                                Just n -> n - 1
+                                Nothing -> 0) + 42 :: Int)
     hideNsp mapper name = if name == "NSP" then "" else mapper name
 
 myLayout desktopSession = smartBorders $ mkToggle (NOBORDERS ?? FULL ?? EOT) $ maximize $ borderResize $ smartSpacing 0 $ layoutHook (myDesktopConfig desktopSession) ||| desktopLayoutModifiers (ThreeColMid 1 (3 / 100) (1 / 2) ||| emptyBSP)
@@ -236,7 +239,8 @@ myManageHook =
         title =? "" <&&> className =? "Wine" --> doIgnore, -- wine微信
         title =? "EmojiFloatWnd" --> doFloat, -- 腾讯会议
         className =? "Xfce4-notifyd" --> doIgnore,
-        className =? "Wrapper-2.0" --> doFloat
+        className =? "Wrapper-2.0" --> doFloat,
+        className =? "ToDesk" --> doFloat
       ]
 
 myWorkspaces = miscs 9 ++ ["0"]
