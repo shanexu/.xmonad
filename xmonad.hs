@@ -33,6 +33,7 @@ import XMonad
     xK_Right,
     xK_Up,
     xK_a,
+    xK_b,
     xK_backslash,
     xK_c,
     xK_e,
@@ -57,7 +58,7 @@ import XMonad
     (<&&>),
     (<+>),
     (=?),
-    (|||), JumpToLayout (JumpToLayout),
+    (|||), JumpToLayout (JumpToLayout), XConf (config),
   )
 import XMonad.Actions.Commands (defaultCommands)
 import XMonad.Actions.CopyWindow (copyToAll)
@@ -101,6 +102,7 @@ import XMonad.Util.WorkspaceCompare (filterOutWs)
 import XMonad.Layout.MultiToggle.Instances (StdTransformers(FULL, NOBORDERS))
 import System.Environment (getEnv)
 import Data.Binary (Word32)
+import Text.Read (readMaybe)
 
 main :: IO ()
 main = do
@@ -158,6 +160,7 @@ main = do
                                 ((myModMask, xK_z), spawn "autorandr -c"),
                                 ((myModMask .|. controlMask, xK_t), namedScratchpadAction scratchpads "dropDownTerminal"),
                                 ((myModMask .|. controlMask, xK_c), namedScratchpadAction scratchpads "chatbox"),
+                                ((myModMask, xK_b), spawn "$HOME/.config/xmonad/scripts/bars.sh"),
                                 -- bsp
                                 ((myModMask .|. mod1Mask, xK_l), sendMessage $ ExpandTowards R),
                                 ((myModMask .|. mod1Mask, xK_h), sendMessage $ ExpandTowards L),
@@ -193,7 +196,9 @@ polybarLogHook dbus =
       ppOutput = D.send dbus
     }
   where
-    nameToCmdNo name = show (((read name - 1) `mod` 10) + 42 :: Int)
+    nameToCmdNo name = show ((case readMaybe name of
+                                Just n -> n - 1
+                                Nothing -> 0) + 42 :: Int)
     hideNsp mapper name = if name == "NSP" then "" else mapper name
 
 myLayout desktopSession = smartBorders $ mkToggle (NOBORDERS ?? FULL ?? EOT) $ maximize $ borderResize $ smartSpacing 0 $ layoutHook (myDesktopConfig desktopSession) ||| desktopLayoutModifiers (ThreeColMid 1 (3 / 100) (1 / 2) ||| emptyBSP)
@@ -237,7 +242,8 @@ myManageHook =
         title =? "" <&&> className =? "Wine" --> doIgnore, -- wine微信
         title =? "EmojiFloatWnd" --> doFloat, -- 腾讯会议
         className =? "Xfce4-notifyd" --> doIgnore,
-        className =? "Wrapper-2.0" --> doFloat
+        className =? "Wrapper-2.0" --> doFloat,
+        className =? "ToDesk" --> doFloat
       ]
 
 myWorkspaces = miscs 9 ++ ["0"]
