@@ -146,6 +146,7 @@ main = do
                               ]
                            ++ [ ((myModMask, xK_g), withFocused toggleBorder),
                                 ((myModMask, xK_p), spawn "rofi -combi-modi window,drun,run -show combi -show-icons -dpi 144"),
+                                ((myModMask, xK_c), spawn "rofi -show calc -modi calc -no-show-match -no-sort -dpi 144"),
                                 ((myModMask .|. shiftMask, xK_p), spawn "rofi -show window -show-icons -dpi 144"),
                                 ((myModMask, xK_x), spawn "QT_AUTO_SCREEN_SCALE_FACTOR=0 flameshot full -c"),
                                 ((myModMask .|. shiftMask, xK_x), spawn "QT_AUTO_SCREEN_SCALE_FACTOR=0 flameshot gui"),
