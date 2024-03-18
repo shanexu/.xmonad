@@ -197,7 +197,7 @@ polybarLogHook dbus =
     }
   where
     nameToCmdNo name = show ((case readMaybe name of
-                                Just n -> n - 1
+                                Just n -> (n - 1) `mod` 10
                                 Nothing -> 0) + 42 :: Int)
     hideNsp mapper name = if name == "NSP" then "" else mapper name
 
