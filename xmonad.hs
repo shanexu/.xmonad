@@ -196,9 +196,12 @@ polybarLogHook dbus =
       ppOutput = D.send dbus
     }
   where
-    nameToCmdNo name = show ((case readMaybe name of
-                                Just n -> (n - 1) `mod` 10
-                                Nothing -> 0) + 42 :: Int)
+    nameToCmdNo name =
+      let x = case readMaybe name of
+                Just n -> (n - 1) `mod` 10
+                Nothing -> 0
+      in
+        show (42 + x)
     hideNsp mapper name = if name == "NSP" then "" else mapper name
 
 myLayout desktopSession = smartBorders $ mkToggle (NOBORDERS ?? FULL ?? EOT) $ maximize $ borderResize $ smartSpacing 0 $ layoutHook (myDesktopConfig desktopSession) ||| desktopLayoutModifiers (ThreeColMid 1 (3 / 100) (1 / 2) ||| emptyBSP)
