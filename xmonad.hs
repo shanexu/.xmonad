@@ -74,7 +74,7 @@ import XMonad.Hooks.EwmhDesktops
 import XMonad.Hooks.ManageHelpers
   ( doCenterFloat,
     doFullFloat,
-    isFullscreen, doLower,
+    isFullscreen, doLower, doFocus,
   )
 import XMonad.Hooks.Place (smart)
 import XMonad.Hooks.ServerMode (serverModeEventHook, serverModeEventHook')
@@ -246,7 +246,8 @@ myManageHook =
         title =? "EmojiFloatWnd" --> doFloat, -- 腾讯会议
         className =? "Xfce4-notifyd" --> doIgnore,
         className =? "Wrapper-2.0" --> doFloat,
-        className =? "ToDesk" --> doFloat
+        className =? "ToDesk" --> doFloat,
+        title =? "com.alibabainc.dingtalk" <&&> className =? "com.alibabainc.dingtalk" --> doIgnore
       ]
 
 myWorkspaces = miscs 9 ++ ["0"]
