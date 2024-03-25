@@ -85,7 +85,7 @@ import XMonad.Layout.Maximize
 import XMonad.Layout.MultiToggle
 import XMonad.Layout.NoBorders
 import XMonad.Layout.Spacing
-import XMonad.Layout.Tabbed (tabbed)
+import XMonad.Layout.Tabbed (tabbed, shrinkText, inactiveBorderColor, activeTextColor, fontName, decoHeight)
 import XMonad.Layout.ThreeColumns
 import XMonad.StackSet qualified as W
 import XMonad.Util.EZConfig
@@ -204,7 +204,13 @@ polybarLogHook dbus =
         show (42 + x)
     hideNsp mapper name = if name == "NSP" then "" else mapper name
 
-myLayout desktopSession = smartBorders $ mkToggle (NOBORDERS ?? FULL ?? EOT) $ maximize $ borderResize $ smartSpacing 0 $ layoutHook (myDesktopConfig desktopSession) ||| desktopLayoutModifiers (ThreeColMid 1 (3 / 100) (1 / 2) ||| emptyBSP)
+myLayout desktopSession = smartBorders $ mkToggle (NOBORDERS ?? FULL ?? EOT) $ maximize $ borderResize $ smartSpacing 0 $ layoutHook (myDesktopConfig desktopSession) ||| desktopLayoutModifiers (ThreeColMid 1 (3 / 100) (1 / 2) ||| emptyBSP ||| tabbed shrinkText myTabConfig)
+
+myTabConfig = def { inactiveBorderColor = "#FF0000"
+                  , activeTextColor = "#00FF00"
+                  , decoHeight = 32
+                  , fontName = "xft:LXGW WenKai Neo Screen Full:style=Regular:size=10"
+                  }
 
 myLauncher = "$($HOME/.cabal/bin/yeganesh -x -- -fn 'Monoid-8' -b)"
 
