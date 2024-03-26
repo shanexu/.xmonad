@@ -11,6 +11,39 @@ packages:
       size: 212
   original:
     hackage: hostname-1.0
+- completed:
+    commit: 1396343a58c9cd205457a5658ec18a20e91e49b1
+    git: https://github.com/xmonad/xmonad.git
+    name: xmonad
+    pantry-tree:
+      sha256: 714ea2ec47ac568ff5cc1a19f79f9e5117eadbb3c9dabcb9121e85c877dce982
+      size: 3832
+    version: 0.18.0
+  original:
+    commit: 1396343a58c9cd205457a5658ec18a20e91e49b1
+    git: https://github.com/xmonad/xmonad.git
+- completed:
+    commit: 9217ac18e94667a6ed50d06d6fa1e47b51f7e604
+    git: https://github.com/xmonad/xmonad-contrib.git
+    name: xmonad-contrib
+    pantry-tree:
+      sha256: 0899d7dcbb77fbe013e3953ffe32f8b6bbb549baecc76ae4ea9edf82aec9cf19
+      size: 25287
+    version: 0.18.0
+  original:
+    commit: 9217ac18e94667a6ed50d06d6fa1e47b51f7e604
+    git: https://github.com/xmonad/xmonad-contrib.git
+- completed:
+    commit: ddd5ed1a8d0e11ad61a2cf8b04b8e51227bf57cf
+    git: https://github.com/troydm/xmonad-dbus.git
+    name: xmonad-dbus
+    pantry-tree:
+      sha256: af76d92cb34ba112cea58b5b21a8fbc6f45d87b356df10117b8c3f8dac04f4d1
+      size: 519
+    version: 0.1.0.2
+  original:
+    commit: ddd5ed1a8d0e11ad61a2cf8b04b8e51227bf57cf
+    git: https://github.com/troydm/xmonad-dbus.git
 snapshots:
 - completed:
     sha256: 6f0bea3ba5b07360f25bc886e8cff8d847767557a492a6f7f6dcb06e3cc79ee9
