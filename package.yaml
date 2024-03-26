@@ -1,4 +1,4 @@
-name:                my-xmonad
+name:                myxmonad
 version:             0.1.0.0
 github:              "shanexu/.xmonad"
 license:             BSD-3-Clause
@@ -51,7 +51,7 @@ executables:
     - -rtsopts
     - -with-rtsopts=-N
     dependencies:
-    - my-xmonad
+    - myxmonad
     - xmonad
     - xmonad-contrib
     - xmonad-dbus
@@ -63,7 +63,7 @@ executables:
     - -rtsopts
     - -with-rtsopts=-N
     dependencies:
-    - my-xmonad
+    - myxmonad
     - xmonad
     - xmonad-contrib
     - xmonad-dbus

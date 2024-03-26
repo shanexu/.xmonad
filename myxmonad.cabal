@@ -4,7 +4,7 @@ cabal-version: 2.2
 --
 -- see: https://github.com/sol/hpack
 
-name:           my-xmonad
+name:           myxmonad
 version:        0.1.0.0
 description:    Please see the README on GitHub at <https://github.com/shanexu/.xmonad#readme>
 homepage:       https://github.com/shanexu/.xmonad#readme
@@ -24,9 +24,9 @@ source-repository head
 
 library
   other-modules:
-      Paths_my_xmonad
+      Paths_myxmonad
   autogen-modules:
-      Paths_my_xmonad
+      Paths_myxmonad
   hs-source-dirs:
       src
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints
@@ -43,9 +43,9 @@ library
 executable myxmonad
   main-is: xmonad.hs
   other-modules:
-      Paths_my_xmonad
+      Paths_myxmonad
   autogen-modules:
-      Paths_my_xmonad
+      Paths_myxmonad
   hs-source-dirs:
       ./
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
@@ -56,7 +56,7 @@ executable myxmonad
     , dbus ==1.3.*
     , directory ==1.3.*
     , hostname >=1.0 && <2.0
-    , my-xmonad
+    , myxmonad
     , text ==2.0.*
     , xmonad
     , xmonad-contrib
@@ -66,9 +66,9 @@ executable myxmonad
 executable xmonadctl
   main-is: xmonadctl.hs
   other-modules:
-      Paths_my_xmonad
+      Paths_myxmonad
   autogen-modules:
-      Paths_my_xmonad
+      Paths_myxmonad
   hs-source-dirs:
       ./
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
@@ -79,7 +79,7 @@ executable xmonadctl
     , dbus ==1.3.*
     , directory ==1.3.*
     , hostname >=1.0 && <2.0
-    , my-xmonad
+    , myxmonad
     , text ==2.0.*
     , xmonad
     , xmonad-contrib
