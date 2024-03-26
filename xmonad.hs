@@ -226,7 +226,7 @@ myTabConfig = def { inactiveBorderColor = "#202030"
                   , inactiveTextColor   = "#607070"
                   , activeTextColor     = "#a0d0d0"
                   , decoHeight          = 42
-                  , fontName            = "xft:Monospace-10,LXGW WenKai Neo Screen Full:size=10"
+                  , fontName            = "xft:Monospace-10,LXGW Neo XiHei Screen Full:size=10,Noto Sans CJK KR:size=10"
                   }
 
 myLauncher = "$($HOME/.cabal/bin/yeganesh -x -- -fn 'Monoid-8' -b)"
