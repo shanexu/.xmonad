@@ -1,6 +1,6 @@
 import Control.Monad (when)
-import DBus.Client qualified as DC
-import Data.Text qualified as T
+import qualified DBus.Client as DC
+import qualified Data.Text as T
 import Data.Text.Encoding.Error (ignore)
 import Network.HostName
 import System.Directory
@@ -68,7 +68,7 @@ import XMonad.Actions.NoBorders
 import XMonad.Config.Desktop
 import XMonad.Config.Gnome (gnomeConfig)
 import XMonad.Config.Xfce (xfceConfig)
-import XMonad.DBus qualified as D
+import qualified XMonad.DBus as D
 import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.EwmhDesktops
 import XMonad.Hooks.ManageHelpers
@@ -87,7 +87,7 @@ import XMonad.Layout.NoBorders
 import XMonad.Layout.Spacing
 import XMonad.Layout.Tabbed (tabbed, shrinkText, inactiveBorderColor, activeTextColor, fontName, decoHeight)
 import XMonad.Layout.ThreeColumns
-import XMonad.StackSet qualified as W
+import qualified XMonad.StackSet as W
 import XMonad.Util.EZConfig
 import XMonad.Util.NamedScratchpad
   ( NamedScratchpad (NS),
