@@ -31,7 +31,8 @@ library
       src
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints
   build-depends:
-      base >=4.7 && <5
+      X11 ==1.10.*
+    , base >=4.7 && <5
     , binary ==0.8.*
     , dbus ==1.3.*
     , directory ==1.3.*
@@ -39,7 +40,7 @@ library
     , text ==2.0.*
   default-language: Haskell2010
 
-executable xmonad-config
+executable my-xmonad
   main-is: xmonad.hs
   other-modules:
       Paths_xmonad_config
@@ -49,7 +50,31 @@ executable xmonad-config
       ./
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      base >=4.7 && <5
+      X11 ==1.10.*
+    , base >=4.7 && <5
+    , binary ==0.8.*
+    , dbus ==1.3.*
+    , directory ==1.3.*
+    , hostname >=1.0 && <2.0
+    , text ==2.0.*
+    , xmonad
+    , xmonad-config
+    , xmonad-contrib
+    , xmonad-dbus
+  default-language: Haskell2010
+
+executable xmonadctl
+  main-is: xmonadctl.hs
+  other-modules:
+      Paths_xmonad_config
+  autogen-modules:
+      Paths_xmonad_config
+  hs-source-dirs:
+      ./
+  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      X11 ==1.10.*
+    , base >=4.7 && <5
     , binary ==0.8.*
     , dbus ==1.3.*
     , directory ==1.3.*
