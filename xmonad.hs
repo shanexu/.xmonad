@@ -85,7 +85,20 @@ import XMonad.Layout.Maximize
 import XMonad.Layout.MultiToggle
 import XMonad.Layout.NoBorders
 import XMonad.Layout.Spacing
-import XMonad.Layout.Tabbed (tabbed, shrinkText, inactiveBorderColor, activeTextColor, fontName, decoHeight)
+import XMonad.Layout.Tabbed
+  (
+    tabbed,
+    tabbedAlways,
+    shrinkText,
+    inactiveBorderColor,
+    activeBorderColor,
+    inactiveColor,
+    activeColor,
+    inactiveTextColor,
+    activeTextColor,
+    fontName,
+    decoHeight
+  )
 import XMonad.Layout.ThreeColumns
 import qualified XMonad.StackSet as W
 import XMonad.Util.EZConfig
@@ -204,12 +217,16 @@ polybarLogHook dbus =
         show (42 + x)
     hideNsp mapper name = if name == "NSP" then "" else mapper name
 
-myLayout desktopSession = smartBorders $ mkToggle (NOBORDERS ?? FULL ?? EOT) $ maximize $ borderResize $ smartSpacing 0 $ layoutHook (myDesktopConfig desktopSession) ||| desktopLayoutModifiers (ThreeColMid 1 (3 / 100) (1 / 2) ||| emptyBSP ||| tabbed shrinkText myTabConfig)
+myLayout desktopSession = smartBorders $ mkToggle (NOBORDERS ?? FULL ?? EOT) $ maximize $ borderResize $ smartSpacing 0 $ layoutHook (myDesktopConfig desktopSession) ||| desktopLayoutModifiers (ThreeColMid 1 (3 / 100) (1 / 2) ||| emptyBSP ||| tabbedAlways shrinkText myTabConfig)
 
-myTabConfig = def { inactiveBorderColor = "#FF0000"
-                  , activeTextColor = "#00FF00"
-                  , decoHeight = 32
-                  , fontName = "xft:LXGW WenKai Neo Screen Full:style=Regular:size=10"
+myTabConfig = def { inactiveBorderColor = "#202030"
+                  , activeBorderColor   = "#a0a0d0"
+                  , inactiveColor       = "#000000"
+                  , activeColor         = "#000000"
+                  , inactiveTextColor   = "#607070"
+                  , activeTextColor     = "#a0d0d0"
+                  , decoHeight          = 42
+                  , fontName            = "xft:Monospace-10,LXGW WenKai Neo Screen Full:size=10"
                   }
 
 myLauncher = "$($HOME/.cabal/bin/yeganesh -x -- -fn 'Monoid-8' -b)"
