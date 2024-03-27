@@ -108,7 +108,6 @@ import XMonad.Layout.BinarySpacePartition
     emptyBSP,
   )
 import XMonad.Layout.BorderResize (borderResize)
-import XMonad.Layout.Dwindle (Dwindle (Spiral))
 import XMonad.Layout.Maximize (maximize, maximizeRestore)
 import XMonad.Layout.MultiToggle
   ( EOT (EOT),
