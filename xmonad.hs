@@ -1,6 +1,7 @@
 import Network.HostName
 import XMonad
-  ( XConfig (borderWidth, focusFollowsMouse, focusedBorderColor, handleEventHook, layoutHook, logHook, manageHook, modMask, normalBorderColor, startupHook, terminal, workspaces),
+  ( def,
+    XConfig (borderWidth, focusFollowsMouse, focusedBorderColor, handleEventHook, layoutHook, logHook, manageHook, modMask, normalBorderColor, startupHook, terminal, workspaces),
     appName,
     className,
     composeAll,
@@ -55,7 +56,7 @@ import XMonad
 import XMonad.Actions.Commands (defaultCommands)
 import XMonad.Actions.CopyWindow (copyToAll)
 import XMonad.Actions.CycleWS (Direction1D (Next, Prev))
-import XMonad.Actions.Navigation2D
+import qualified XMonad.Actions.Navigation2D as N2D
 import XMonad.Actions.NoBorders ( toggleBorder )
 import XMonad.Config.Desktop ( desktopLayoutModifiers )
 import XMonad.Config.Gnome (gnomeConfig)
@@ -77,9 +78,19 @@ import XMonad.Hooks.ManageHelpers
 import XMonad.Hooks.ServerMode (serverModeEventHook')
 import XMonad.Hooks.SetWMName ( setWMName )
 import XMonad.Layout.BinarySpacePartition
+    ( ResizeDirectional(ShrinkFrom, ExpandTowards),
+      Rotate(Rotate),
+      Swap(Swap),
+      FocusParent(FocusParent),
+      SelectMoveNode(MoveNode, SelectNode),
+      SplitShiftDirectional(SplitShift),
+      TreeBalance(Equalize, Balance),
+      Direction2D(U, R, L, D),
+      emptyBSP )
 import XMonad.Layout.BorderResize ( borderResize )
 import XMonad.Layout.Maximize ( maximizeRestore, maximize )
 import XMonad.Layout.MultiToggle
+    ( EOT(EOT), Toggle(Toggle), mkToggle, (??) )
 import XMonad.Layout.NoBorders ( smartBorders, hasBorder )
 import XMonad.Layout.Spacing ( smartSpacing )
 import XMonad.Layout.Tabbed
@@ -118,11 +129,11 @@ main = do
   dbus <- D.connect
   _ <- D.requestAccess dbus
   xmonad
-    $ navigation2D
+    $ N2D.navigation2D
       def
       (xK_Up, xK_Left, xK_Down, xK_Right)
-      [ (mod4Mask, windowGo),
-        (mod4Mask .|. shiftMask, windowSwap)
+      [ (mod4Mask, N2D.windowGo),
+        (mod4Mask .|. shiftMask, N2D.windowSwap)
       ]
       False
     $ ewmhFullscreen . addEwmhWorkspaceSort (pure (filterOutWs [scratchpadWorkspaceTag]))
