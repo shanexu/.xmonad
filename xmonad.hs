@@ -1,3 +1,5 @@
+{-# OPTIONS_GHC -Wno-missing-signatures #-}
+
 import Data.Binary (Word32)
 import Network.HostName
 import System.Environment (getEnv)
@@ -18,7 +20,6 @@ import XMonad
     sendMessage,
     shiftMask,
     spawn,
-    stringProperty,
     title,
     whenJust,
     windows,
@@ -232,9 +233,12 @@ polybarLogHook dbus =
     }
   where
     nameToCmdNo name =
-      let x = case readMaybe name of
-            Just n -> (n - 1) `mod` 10
-            Nothing -> 0
+      let x =
+            ( case readMaybe name of
+                Just n -> (n - 1) `mod` 10
+                Nothing -> 0
+            ) ::
+              Int
        in show (42 + x)
     hideNsp mapper name = if name == "NSP" then "" else mapper name
 
@@ -256,19 +260,14 @@ myTabConfig =
 
 myModMask = mod4Mask
 
-myStartupHook hostname desktopSession = do
+myStartupHook _ desktopSession = do
   startupHook (myDesktopConfig desktopSession)
   setWMName "LG3D"
-
--- spawn "$HOME/.config/xmonad/scripts/ay-night-switcherd.sh"
--- spawn "$HOME/.config/xmonad/scripts/bars.sh"
 
 scratchpads =
   [ NS "dropDownTerminal" "tabbed -c -n Drop-Down-Terminal alacritty -o window.opacity=0.80 --embed" (appName =? "Drop-Down-Terminal") (customFloating $ W.RationalRect (1 / 8) (0 / 6) (3 / 4) (2 / 3)),
     NS "chatbox" "Chatbox" (appName =? "xyz.chatboxapp.app") (customFloating $ W.RationalRect (1 / 8) (0 / 6) (3 / 4) (2 / 3))
   ]
-  where
-    role = stringProperty "WM_WINDOW_ROLE"
 
 myManageHook =
   namedScratchpadManageHook scratchpads
@@ -299,7 +298,7 @@ myManageHook =
 
 myWorkspaces = miscs 9 ++ ["0"]
   where
-    miscs = map (("" ++) . show) . flip take [1 ..]
+    miscs = map (("" ++) . show :: Int -> String) . flip take [1 ..]
 
 myExtraWorkspaces = [(xK_0, "0")]
 
