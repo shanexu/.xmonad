@@ -59,26 +59,32 @@ import XMonad.Actions.Commands (defaultCommands)
 import XMonad.Actions.CopyWindow (copyToAll)
 import XMonad.Actions.CycleWS (Direction1D (Next, Prev))
 import XMonad.Actions.Navigation2D
-import XMonad.Actions.NoBorders
-import XMonad.Config.Desktop
+import XMonad.Actions.NoBorders ( toggleBorder )
+import XMonad.Config.Desktop ( desktopLayoutModifiers )
 import XMonad.Config.Gnome (gnomeConfig)
 import XMonad.Config.Xfce (xfceConfig)
 import qualified XMonad.DBus as D
 import XMonad.Hooks.DynamicLog
+    ( PP(ppOutput, ppCurrent, ppVisible, ppLayout, ppHidden,
+         ppHiddenNoWindows, ppVisibleNoWindows, ppWsSep, ppSep, ppTitle),
+      dynamicLogWithPP,
+      wrap,
+      shorten )
 import XMonad.Hooks.EwmhDesktops
+    ( ewmhFullscreen, addEwmhWorkspaceSort )
 import XMonad.Hooks.ManageHelpers
   ( doCenterFloat,
     doFullFloat,
     isFullscreen,
   )
 import XMonad.Hooks.ServerMode (serverModeEventHook')
-import XMonad.Hooks.SetWMName
+import XMonad.Hooks.SetWMName ( setWMName )
 import XMonad.Layout.BinarySpacePartition
-import XMonad.Layout.BorderResize
-import XMonad.Layout.Maximize
+import XMonad.Layout.BorderResize ( borderResize )
+import XMonad.Layout.Maximize ( maximizeRestore, maximize )
 import XMonad.Layout.MultiToggle
-import XMonad.Layout.NoBorders
-import XMonad.Layout.Spacing
+import XMonad.Layout.NoBorders ( smartBorders, hasBorder )
+import XMonad.Layout.Spacing ( smartSpacing )
 import XMonad.Layout.Tabbed
   (
     tabbedAlways,
@@ -92,7 +98,7 @@ import XMonad.Layout.Tabbed
     fontName,
     decoHeight
   )
-import XMonad.Layout.ThreeColumns
+import XMonad.Layout.ThreeColumns ( ThreeCol(ThreeColMid) )
 import qualified XMonad.StackSet as W
 import XMonad.Util.EZConfig ( additionalKeys )
 import XMonad.Util.NamedScratchpad
