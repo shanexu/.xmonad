@@ -3,8 +3,7 @@
 ## install
 
 ```sh
-stack install xmonad xmonad-dbus
-stack install
+stack install xmonad xmonad-dbus :myxmonad :xmonadctl
 ```
 
 ## key binding
