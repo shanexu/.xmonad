@@ -8,10 +8,8 @@ import XMonad
     doF,
     doFloat,
     doIgnore,
-    ifM,
     mod1Mask,
     mod4Mask,
-    resource,
     screenWorkspace,
     sendMessage,
     shiftMask,
@@ -23,7 +21,6 @@ import XMonad
     withFocused,
     xK_0,
     xK_Down,
-    xK_F2,
     xK_Left,
     xK_Right,
     xK_Up,
@@ -53,7 +50,7 @@ import XMonad
     (<&&>),
     (<+>),
     (=?),
-    (|||), JumpToLayout (JumpToLayout), XConf (config),
+    (|||),
   )
 import XMonad.Actions.Commands (defaultCommands)
 import XMonad.Actions.CopyWindow (copyToAll)
