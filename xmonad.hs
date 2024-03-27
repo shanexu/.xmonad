@@ -1,11 +1,14 @@
+import Data.Binary (Word32)
 import Network.HostName
+import System.Environment (getEnv)
+import Text.Read (readMaybe)
 import XMonad
-  ( def,
-    XConfig (borderWidth, focusFollowsMouse, focusedBorderColor, handleEventHook, layoutHook, logHook, manageHook, modMask, normalBorderColor, startupHook, terminal, workspaces),
+  ( XConfig (borderWidth, focusFollowsMouse, focusedBorderColor, handleEventHook, layoutHook, logHook, manageHook, modMask, normalBorderColor, startupHook, terminal, workspaces),
     appName,
     className,
     composeAll,
     controlMask,
+    def,
     doF,
     doFloat,
     doIgnore,
@@ -57,58 +60,76 @@ import XMonad.Actions.Commands (defaultCommands)
 import XMonad.Actions.CopyWindow (copyToAll)
 import XMonad.Actions.CycleWS (Direction1D (Next, Prev))
 import qualified XMonad.Actions.Navigation2D as N2D
-import XMonad.Actions.NoBorders ( toggleBorder )
-import XMonad.Config.Desktop ( desktopLayoutModifiers )
+import XMonad.Actions.NoBorders (toggleBorder)
+import XMonad.Config.Desktop (desktopLayoutModifiers)
 import XMonad.Config.Gnome (gnomeConfig)
 import XMonad.Config.Xfce (xfceConfig)
 import qualified XMonad.DBus as D
 import XMonad.Hooks.DynamicLog
-    ( PP(ppOutput, ppCurrent, ppVisible, ppLayout, ppHidden,
-         ppHiddenNoWindows, ppVisibleNoWindows, ppWsSep, ppSep, ppTitle),
-      dynamicLogWithPP,
-      wrap,
-      shorten )
+  ( PP
+      ( ppCurrent,
+        ppHidden,
+        ppHiddenNoWindows,
+        ppLayout,
+        ppOutput,
+        ppSep,
+        ppTitle,
+        ppVisible,
+        ppVisibleNoWindows,
+        ppWsSep
+      ),
+    dynamicLogWithPP,
+    shorten,
+    wrap,
+  )
 import XMonad.Hooks.EwmhDesktops
-    ( ewmhFullscreen, addEwmhWorkspaceSort )
+  ( addEwmhWorkspaceSort,
+    ewmhFullscreen,
+  )
 import XMonad.Hooks.ManageHelpers
   ( doCenterFloat,
     doFullFloat,
     isFullscreen,
   )
 import XMonad.Hooks.ServerMode (serverModeEventHook')
-import XMonad.Hooks.SetWMName ( setWMName )
+import XMonad.Hooks.SetWMName (setWMName)
 import XMonad.Layout.BinarySpacePartition
-    ( ResizeDirectional(ShrinkFrom, ExpandTowards),
-      Rotate(Rotate),
-      Swap(Swap),
-      FocusParent(FocusParent),
-      SelectMoveNode(MoveNode, SelectNode),
-      SplitShiftDirectional(SplitShift),
-      TreeBalance(Equalize, Balance),
-      Direction2D(U, R, L, D),
-      emptyBSP )
-import XMonad.Layout.BorderResize ( borderResize )
-import XMonad.Layout.Maximize ( maximizeRestore, maximize )
-import XMonad.Layout.MultiToggle
-    ( EOT(EOT), Toggle(Toggle), mkToggle, (??) )
-import XMonad.Layout.NoBorders ( smartBorders, hasBorder )
-import XMonad.Layout.Spacing ( smartSpacing )
-import XMonad.Layout.Tabbed
-  (
-    tabbedAlways,
-    shrinkText,
-    inactiveBorderColor,
-    activeBorderColor,
-    inactiveColor,
-    activeColor,
-    inactiveTextColor,
-    activeTextColor,
-    fontName,
-    decoHeight
+  ( Direction2D (D, L, R, U),
+    FocusParent (FocusParent),
+    ResizeDirectional (ExpandTowards, ShrinkFrom),
+    Rotate (Rotate),
+    SelectMoveNode (MoveNode, SelectNode),
+    SplitShiftDirectional (SplitShift),
+    Swap (Swap),
+    TreeBalance (Balance, Equalize),
+    emptyBSP,
   )
-import XMonad.Layout.ThreeColumns ( ThreeCol(ThreeColMid) )
+import XMonad.Layout.BorderResize (borderResize)
+import XMonad.Layout.Maximize (maximize, maximizeRestore)
+import XMonad.Layout.MultiToggle
+  ( EOT (EOT),
+    Toggle (Toggle),
+    mkToggle,
+    (??),
+  )
+import XMonad.Layout.MultiToggle.Instances (StdTransformers (FULL, NOBORDERS))
+import XMonad.Layout.NoBorders (hasBorder, smartBorders)
+import XMonad.Layout.Spacing (smartSpacing)
+import XMonad.Layout.Tabbed
+  ( activeBorderColor,
+    activeColor,
+    activeTextColor,
+    decoHeight,
+    fontName,
+    inactiveBorderColor,
+    inactiveColor,
+    inactiveTextColor,
+    shrinkText,
+    tabbedAlways,
+  )
+import XMonad.Layout.ThreeColumns (ThreeCol (ThreeColMid))
 import qualified XMonad.StackSet as W
-import XMonad.Util.EZConfig ( additionalKeys )
+import XMonad.Util.EZConfig (additionalKeys)
 import XMonad.Util.NamedScratchpad
   ( NamedScratchpad (NS),
     customFloating,
@@ -117,10 +138,6 @@ import XMonad.Util.NamedScratchpad
     scratchpadWorkspaceTag,
   )
 import XMonad.Util.WorkspaceCompare (filterOutWs)
-import XMonad.Layout.MultiToggle.Instances (StdTransformers(FULL, NOBORDERS))
-import System.Environment (getEnv)
-import Data.Binary (Word32)
-import Text.Read (readMaybe)
 
 main :: IO ()
 main = do
@@ -216,23 +233,24 @@ polybarLogHook dbus =
   where
     nameToCmdNo name =
       let x = case readMaybe name of
-                Just n -> (n - 1) `mod` 10
-                Nothing -> 0
-      in
-        show (42 + x)
+            Just n -> (n - 1) `mod` 10
+            Nothing -> 0
+       in show (42 + x)
     hideNsp mapper name = if name == "NSP" then "" else mapper name
 
 myLayout desktopSession = smartBorders $ mkToggle (NOBORDERS ?? FULL ?? EOT) $ maximize $ borderResize $ smartSpacing 0 $ layoutHook (myDesktopConfig desktopSession) ||| desktopLayoutModifiers (ThreeColMid 1 (3 / 100) (1 / 2) ||| emptyBSP ||| tabbedAlways shrinkText myTabConfig)
 
-myTabConfig = def { inactiveBorderColor = "#202030"
-                  , activeBorderColor   = "#a0a0d0"
-                  , inactiveColor       = "#000000"
-                  , activeColor         = "#000000"
-                  , inactiveTextColor   = "#607070"
-                  , activeTextColor     = "#a0d0d0"
-                  , decoHeight          = 42
-                  , fontName            = "xft:Monospace-10,LXGW Neo XiHei Screen Full:size=10,Noto Sans CJK KR:size=10"
-                  }
+myTabConfig =
+  def
+    { inactiveBorderColor = "#202030",
+      activeBorderColor = "#a0a0d0",
+      inactiveColor = "#000000",
+      activeColor = "#000000",
+      inactiveTextColor = "#607070",
+      activeTextColor = "#a0d0d0",
+      decoHeight = 42,
+      fontName = "xft:Monospace-10,LXGW Neo XiHei Screen Full:size=10,Noto Sans CJK KR:size=10"
+    }
 
 -- myLauncher = "$($HOME/.cabal/bin/yeganesh -x -- -fn 'Monoid-8' -b)"
 
@@ -241,8 +259,9 @@ myModMask = mod4Mask
 myStartupHook hostname desktopSession = do
   startupHook (myDesktopConfig desktopSession)
   setWMName "LG3D"
-  -- spawn "$HOME/.config/xmonad/scripts/ay-night-switcherd.sh"
-  -- spawn "$HOME/.config/xmonad/scripts/bars.sh"
+
+-- spawn "$HOME/.config/xmonad/scripts/ay-night-switcherd.sh"
+-- spawn "$HOME/.config/xmonad/scripts/bars.sh"
 
 scratchpads =
   [ NS "dropDownTerminal" "tabbed -c -n Drop-Down-Terminal alacritty -o window.opacity=0.80 --embed" (appName =? "Drop-Down-Terminal") (customFloating $ W.RationalRect (1 / 8) (0 / 6) (3 / 4) (2 / 3)),
