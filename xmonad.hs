@@ -55,7 +55,7 @@ import XMonad
     (<&&>),
     (<+>),
     (=?),
-    (|||),
+    (|||), Tall (Tall), Mirror (Mirror),
   )
 import XMonad.Actions.Commands (defaultCommands)
 import XMonad.Actions.CopyWindow (copyToAll)
@@ -242,7 +242,7 @@ polybarLogHook dbus =
        in show (42 + x)
     hideNsp mapper name = if name == "NSP" then "" else mapper name
 
-myLayout desktopSession = smartBorders $ mkToggle (NOBORDERS ?? FULL ?? EOT) $ maximize $ borderResize $ smartSpacing 0 $ layoutHook (myDesktopConfig desktopSession) ||| desktopLayoutModifiers (ThreeColMid 1 (3 / 100) (1 / 2) ||| emptyBSP ||| tabbedAlways shrinkText myTabConfig)
+myLayout _ = smartBorders $ mkToggle (NOBORDERS ?? FULL ?? EOT) $ maximize $ borderResize $ smartSpacing 0 $ desktopLayoutModifiers (Tall 1 (1/100) (1/2) ||| Mirror (Tall 1 (1/100) (1/2)) ||| ThreeColMid 1 (1/100) (1/2) ||| tabbedAlways shrinkText myTabConfig ||| emptyBSP)
 
 myTabConfig =
   def
