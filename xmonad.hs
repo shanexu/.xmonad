@@ -1,9 +1,4 @@
-import Control.Monad (when)
-import qualified DBus.Client as DC
-import qualified Data.Text as T
-import Data.Text.Encoding.Error (ignore)
 import Network.HostName
-import System.Directory
 import XMonad
   ( XConfig (borderWidth, focusFollowsMouse, focusedBorderColor, handleEventHook, layoutHook, logHook, manageHook, modMask, normalBorderColor, startupHook, terminal, workspaces),
     appName,
@@ -76,8 +71,7 @@ import XMonad.Hooks.ManageHelpers
     doFullFloat,
     isFullscreen, doLower, doFocus,
   )
-import XMonad.Hooks.Place (smart)
-import XMonad.Hooks.ServerMode (serverModeEventHook, serverModeEventHook')
+import XMonad.Hooks.ServerMode (serverModeEventHook')
 import XMonad.Hooks.SetWMName
 import XMonad.Layout.BinarySpacePartition
 import XMonad.Layout.BorderResize
@@ -87,7 +81,6 @@ import XMonad.Layout.NoBorders
 import XMonad.Layout.Spacing
 import XMonad.Layout.Tabbed
   (
-    tabbed,
     tabbedAlways,
     shrinkText,
     inactiveBorderColor,
@@ -109,8 +102,6 @@ import XMonad.Util.NamedScratchpad
     namedScratchpadManageHook,
     scratchpadWorkspaceTag,
   )
-import XMonad.Util.SpawnOnce
-import XMonad.Util.Themes (ThemeInfo (theme))
 import XMonad.Util.WorkspaceCompare (filterOutWs)
 import XMonad.Layout.MultiToggle.Instances (StdTransformers(FULL, NOBORDERS))
 import System.Environment (getEnv)
@@ -229,7 +220,7 @@ myTabConfig = def { inactiveBorderColor = "#202030"
                   , fontName            = "xft:Monospace-10,LXGW Neo XiHei Screen Full:size=10,Noto Sans CJK KR:size=10"
                   }
 
-myLauncher = "$($HOME/.cabal/bin/yeganesh -x -- -fn 'Monoid-8' -b)"
+-- myLauncher = "$($HOME/.cabal/bin/yeganesh -x -- -fn 'Monoid-8' -b)"
 
 myModMask = mod4Mask
 
