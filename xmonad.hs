@@ -69,7 +69,7 @@ import XMonad.Hooks.EwmhDesktops
 import XMonad.Hooks.ManageHelpers
   ( doCenterFloat,
     doFullFloat,
-    isFullscreen, doLower, doFocus,
+    isFullscreen,
   )
 import XMonad.Hooks.ServerMode (serverModeEventHook')
 import XMonad.Hooks.SetWMName
@@ -94,7 +94,7 @@ import XMonad.Layout.Tabbed
   )
 import XMonad.Layout.ThreeColumns
 import qualified XMonad.StackSet as W
-import XMonad.Util.EZConfig
+import XMonad.Util.EZConfig ( additionalKeys )
 import XMonad.Util.NamedScratchpad
   ( NamedScratchpad (NS),
     customFloating,
