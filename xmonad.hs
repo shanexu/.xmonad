@@ -5,7 +5,9 @@ import Network.HostName
 import System.Environment (getEnv)
 import Text.Read (readMaybe)
 import XMonad
-  ( XConfig (borderWidth, focusFollowsMouse, focusedBorderColor, handleEventHook, layoutHook, logHook, manageHook, modMask, normalBorderColor, startupHook, terminal, workspaces),
+  ( Mirror (Mirror),
+    Tall (Tall),
+    XConfig (borderWidth, focusFollowsMouse, focusedBorderColor, handleEventHook, layoutHook, logHook, manageHook, modMask, normalBorderColor, startupHook, terminal, workspaces),
     appName,
     className,
     composeAll,
@@ -55,7 +57,7 @@ import XMonad
     (<&&>),
     (<+>),
     (=?),
-    (|||), Tall (Tall), Mirror (Mirror),
+    (|||),
   )
 import XMonad.Actions.Commands (defaultCommands)
 import XMonad.Actions.CopyWindow (copyToAll)
@@ -106,6 +108,7 @@ import XMonad.Layout.BinarySpacePartition
     emptyBSP,
   )
 import XMonad.Layout.BorderResize (borderResize)
+import XMonad.Layout.Dwindle (Dwindle (Spiral))
 import XMonad.Layout.Maximize (maximize, maximizeRestore)
 import XMonad.Layout.MultiToggle
   ( EOT (EOT),
@@ -116,6 +119,7 @@ import XMonad.Layout.MultiToggle
 import XMonad.Layout.MultiToggle.Instances (StdTransformers (FULL, NOBORDERS))
 import XMonad.Layout.NoBorders (hasBorder, smartBorders)
 import XMonad.Layout.Spacing (smartSpacing)
+import XMonad.Layout.Spiral (spiral)
 import XMonad.Layout.Tabbed
   ( activeBorderColor,
     activeColor,
@@ -242,7 +246,7 @@ polybarLogHook dbus =
        in show (42 + x)
     hideNsp mapper name = if name == "NSP" then "" else mapper name
 
-myLayout _ = smartBorders $ mkToggle (NOBORDERS ?? FULL ?? EOT) $ maximize $ borderResize $ smartSpacing 0 $ desktopLayoutModifiers (Tall 1 (1/100) (1/2) ||| Mirror (Tall 1 (1/100) (1/2)) ||| ThreeColMid 1 (1/100) (1/2) ||| tabbedAlways shrinkText myTabConfig ||| emptyBSP)
+myLayout _ = smartBorders $ mkToggle (NOBORDERS ?? FULL ?? EOT) $ maximize $ borderResize $ smartSpacing 0 $ desktopLayoutModifiers (Tall 1 (1 / 100) (1 / 2) ||| Mirror (Tall 1 (1 / 100) (1 / 2)) ||| spiral (6 / 7) ||| ThreeColMid 1 (1 / 100) (1 / 2) ||| tabbedAlways shrinkText myTabConfig ||| emptyBSP)
 
 myTabConfig =
   def
