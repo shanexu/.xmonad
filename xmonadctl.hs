@@ -1,17 +1,22 @@
-#!/usr/bin/env runhaskell
-
--- Copyright: (c) Peter Olson 2013 and Andrea Rossato and David Roundy 2007
--- License: BSD-style (see xmonad/LICENSE)
---
--- Compile with @ghc --make xmonadctl.hs@
--- For usage help, do @xmonadctl -h@
-
-import Control.Monad
-import Data.Char
+import Control.Monad (unless)
+import Data.Char ()
 import Graphics.X11.Xlib
+  ( allocaXEvent,
+    clientMessage,
+    defaultScreen,
+    internAtom,
+    openDisplay,
+    rootWindow,
+    sendEvent,
+    structureNotifyMask,
+    sync,
+  )
 import Graphics.X11.Xlib.Extras
-import System.Environment
-import System.IO
+  ( setClientMessageEvent,
+    setEventType,
+  )
+import System.Environment (getArgs, getProgName)
+import System.IO (hPutStrLn, isEOF, stderr)
 
 main :: IO ()
 main = parse True "XMONAD_COMMAND" =<< getArgs
