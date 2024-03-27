@@ -113,7 +113,7 @@ main = do
   desktopSession <- getEnv "DESKTOP_SESSION"
   hostname <- getHostName
   dbus <- D.connect
-  D.requestAccess dbus
+  _ <- D.requestAccess dbus
   xmonad
     $ navigation2D
       def
