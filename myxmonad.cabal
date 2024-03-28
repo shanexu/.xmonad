@@ -37,7 +37,9 @@ library
     , dbus ==1.3.*
     , directory ==1.3.*
     , hostname >=1.0 && <2.0
-    , text ==2.0.*
+    , text ==2.1.*
+    , xmonad ==0.18.0
+    , xmonad-contrib ==0.18.0
   default-language: Haskell2010
 
 executable myxmonad
@@ -57,7 +59,7 @@ executable myxmonad
     , directory ==1.3.*
     , hostname >=1.0 && <2.0
     , myxmonad
-    , text ==2.0.*
+    , text ==2.1.*
     , xmonad
     , xmonad-contrib
     , xmonad-dbus
@@ -80,7 +82,7 @@ executable xmonadctl
     , directory ==1.3.*
     , hostname >=1.0 && <2.0
     , myxmonad
-    , text ==2.0.*
+    , text ==2.1.*
     , xmonad
     , xmonad-contrib
     , xmonad-dbus

@@ -12,27 +12,19 @@ packages:
   original:
     hackage: hostname-1.0
 - completed:
-    commit: 1396343a58c9cd205457a5658ec18a20e91e49b1
-    git: https://github.com/xmonad/xmonad.git
-    name: xmonad
+    hackage: xmonad-0.18.0@sha256:22300a2626ba5b00dcf0e5071d56ccb42140fb849ee6ea7bf1337ed07de33642,5453
     pantry-tree:
-      sha256: 714ea2ec47ac568ff5cc1a19f79f9e5117eadbb3c9dabcb9121e85c877dce982
-      size: 3832
-    version: 0.18.0
+      sha256: 475b273803119d4b6f3f0ad496d93092ad53bb7b2306182603531093899b26d1
+      size: 2486
   original:
-    commit: 1396343a58c9cd205457a5658ec18a20e91e49b1
-    git: https://github.com/xmonad/xmonad.git
+    hackage: xmonad-0.18.0
 - completed:
-    commit: 9217ac18e94667a6ed50d06d6fa1e47b51f7e604
-    git: https://github.com/xmonad/xmonad-contrib.git
-    name: xmonad-contrib
+    hackage: xmonad-contrib-0.18.0@sha256:aae129651391ec65e4c7cf4c23b280cc5e69f709d86668502426a41eebab9d3c,22370
     pantry-tree:
-      sha256: 0899d7dcbb77fbe013e3953ffe32f8b6bbb549baecc76ae4ea9edf82aec9cf19
-      size: 25287
-    version: 0.18.0
+      sha256: d2987f3843f1c5ca11bf63d22630679a34b7578f432a96f0dec97b98c4984e72
+      size: 23806
   original:
-    commit: 9217ac18e94667a6ed50d06d6fa1e47b51f7e604
-    git: https://github.com/xmonad/xmonad-contrib.git
+    hackage: xmonad-contrib-0.18.0
 - completed:
     commit: ddd5ed1a8d0e11ad61a2cf8b04b8e51227bf57cf
     git: https://github.com/troydm/xmonad-dbus.git
@@ -46,8 +38,8 @@ packages:
     git: https://github.com/troydm/xmonad-dbus.git
 snapshots:
 - completed:
-    sha256: 6f0bea3ba5b07360f25bc886e8cff8d847767557a492a6f7f6dcb06e3cc79ee9
-    size: 712905
-    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/22/13.yaml
+    sha256: 67e08280ceafd075b666f80c95d0962f41ba938c85dfcf8bf37cb77fdf93bc23
+    size: 621458
+    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/nightly/2024/3/27.yaml
   original:
-    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/22/13.yaml
+    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/nightly/2024/3/27.yaml

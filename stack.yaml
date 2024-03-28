@@ -18,7 +18,7 @@
 # resolver: ./custom-snapshot.yaml
 # resolver: https://example.com/snapshots/2023-01-01.yaml
 resolver:
-  url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/22/13.yaml
+  url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/nightly/2024/3/27.yaml
 
 # User packages to be built.
 # Various formats can be used as shown in the example below.
@@ -43,10 +43,8 @@ packages:
 #
 extra-deps:
 - hostname-1.0
-- git: https://github.com/xmonad/xmonad.git
-  commit: 1396343a58c9cd205457a5658ec18a20e91e49b1
-- git: https://github.com/xmonad/xmonad-contrib.git
-  commit: 9217ac18e94667a6ed50d06d6fa1e47b51f7e604
+- xmonad-0.18.0
+- xmonad-contrib-0.18.0
 - git: https://github.com/troydm/xmonad-dbus.git
   commit: ddd5ed1a8d0e11ad61a2cf8b04b8e51227bf57cf
 
