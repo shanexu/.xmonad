@@ -148,6 +148,7 @@ import XMonad.Util.Types
   )
 import XMonad.Util.WorkspaceCompare (filterOutWs)
 import XMonad.Hooks.Place (placeHook, inBounds, underMouse)
+import XMonad.Util.SpawnOnce (spawnOnce)
 
 main :: IO ()
 main = do
@@ -272,6 +273,7 @@ myModMask = mod4Mask
 myStartupHook _ desktopSession = do
   startupHook (myDesktopConfig desktopSession)
   setWMName "LG3D"
+  spawnOnce "$HOME/.config/xmonad/scripts/bars.sh"
 
 scratchpads =
   [ NS "dropDownTerminal" "tabbed -c -n Drop-Down-Terminal alacritty -o window.opacity=0.80 --embed" (appName =? "Drop-Down-Terminal") (customFloating $ W.RationalRect (1 / 8) (0 / 6) (3 / 4) (2 / 3)),
