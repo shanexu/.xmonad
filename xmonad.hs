@@ -61,7 +61,6 @@ import XMonad
   )
 import XMonad.Actions.Commands (defaultCommands)
 import XMonad.Actions.CopyWindow (copyToAll)
-import XMonad.Actions.CycleWS (Direction1D (Next, Prev))
 import qualified XMonad.Actions.Navigation2D as N2D
 import XMonad.Actions.NoBorders (toggleBorder)
 import XMonad.Config.Desktop (desktopLayoutModifiers)
@@ -97,7 +96,7 @@ import XMonad.Hooks.ManageHelpers
 import XMonad.Hooks.ServerMode (serverModeEventHook')
 import XMonad.Hooks.SetWMName (setWMName)
 import XMonad.Layout.BinarySpacePartition
-  ( Direction2D (D, L, R, U),
+  (
     FocusParent (FocusParent),
     ResizeDirectional (ExpandTowards, ShrinkFrom),
     Rotate (Rotate),
@@ -120,6 +119,10 @@ import XMonad.Layout.NoBorders (hasBorder, smartBorders)
 import XMonad.Layout.Spacing (smartSpacing)
 import XMonad.Layout.Spiral (spiral)
 import XMonad.Layout.Tabbed
+  ( shrinkText,
+    tabbedAlways,
+  )
+import XMonad.Layout.Decoration
   ( activeBorderColor,
     activeColor,
     activeTextColor,
@@ -128,8 +131,6 @@ import XMonad.Layout.Tabbed
     inactiveBorderColor,
     inactiveColor,
     inactiveTextColor,
-    shrinkText,
-    tabbedAlways,
   )
 import XMonad.Layout.ThreeColumns (ThreeCol (ThreeColMid))
 import qualified XMonad.StackSet as W
@@ -141,7 +142,13 @@ import XMonad.Util.NamedScratchpad
     namedScratchpadManageHook,
     scratchpadWorkspaceTag,
   )
+import XMonad.Util.Types
+  ( Direction1D (Prev, Next),
+    Direction2D (D, L, R, U),
+  )
 import XMonad.Util.WorkspaceCompare (filterOutWs)
+import XMonad.Hooks.Place (placeHook, inBounds, underMouse)
+import XMonad.Util.SpawnOnce (spawnOnce)
 
 main :: IO ()
 main = do
@@ -266,6 +273,7 @@ myModMask = mod4Mask
 myStartupHook _ desktopSession = do
   startupHook (myDesktopConfig desktopSession)
   setWMName "LG3D"
+  spawnOnce "$HOME/.config/xmonad/scripts/bars.sh"
 
 scratchpads =
   [ NS "dropDownTerminal" "tabbed -c -n Drop-Down-Terminal alacritty -o window.opacity=0.80 --embed" (appName =? "Drop-Down-Terminal") (customFloating $ W.RationalRect (1 / 8) (0 / 6) (3 / 4) (2 / 3)),
@@ -296,7 +304,7 @@ myManageHook =
         className =? "Xfce4-notifyd" --> doIgnore,
         className =? "Wrapper-2.0" --> doFloat,
         className =? "ToDesk" --> doFloat,
-        title =? "com.alibabainc.dingtalk" <&&> className =? "com.alibabainc.dingtalk" --> doIgnore
+        title =? "com.alibabainc.dingtalk" <&&> className =? "com.alibabainc.dingtalk" --> doFloat >> placeHook (inBounds (underMouse (0, 0)))
       ]
 
 myWorkspaces = miscs 9 ++ ["0"]
