@@ -272,7 +272,7 @@ myModMask = mod4Mask
 
 myStartupHook _ desktopSession = do
   startupHook (myDesktopConfig desktopSession)
-  setWMName "LG3D"
+  -- setWMName "LG3D"
   spawnOnce "$HOME/.config/xmonad/scripts/bars.sh"
 
 scratchpads =
