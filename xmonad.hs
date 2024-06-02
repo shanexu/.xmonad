@@ -94,17 +94,6 @@ import XMonad.Hooks.ManageHelpers
     isFullscreen,
   )
 import XMonad.Hooks.ServerMode (serverModeEventHook')
-import XMonad.Layout.BinarySpacePartition
-  (
-    FocusParent (FocusParent),
-    ResizeDirectional (ExpandTowards, ShrinkFrom),
-    Rotate (Rotate),
-    SelectMoveNode (MoveNode, SelectNode),
-    SplitShiftDirectional (SplitShift),
-    Swap (Swap),
-    TreeBalance (Balance, Equalize),
-    emptyBSP,
-  )
 import XMonad.Layout.BorderResize (borderResize)
 import XMonad.Layout.Maximize (maximize, maximizeRestore)
 import XMonad.Layout.MultiToggle
@@ -140,10 +129,6 @@ import XMonad.Util.NamedScratchpad
     namedScratchpadAction,
     namedScratchpadManageHook,
     scratchpadWorkspaceTag,
-  )
-import XMonad.Util.Types
-  ( Direction1D (Prev, Next),
-    Direction2D (D, L, R, U),
   )
 import XMonad.Util.WorkspaceCompare (filterOutWs)
 import XMonad.Hooks.Place (placeHook, inBounds, underMouse)
@@ -205,25 +190,7 @@ main = do
                                 ((myModMask, xK_z), spawn "autorandr -c"),
                                 ((myModMask .|. controlMask, xK_t), namedScratchpadAction scratchpads "dropDownTerminal"),
                                 ((myModMask .|. controlMask, xK_c), namedScratchpadAction scratchpads "chatbox"),
-                                ((myModMask, xK_b), spawn "$HOME/.config/xmonad/scripts/bars.sh"),
-                                -- bsp
-                                ((myModMask .|. mod1Mask, xK_l), sendMessage $ ExpandTowards R),
-                                ((myModMask .|. mod1Mask, xK_h), sendMessage $ ExpandTowards L),
-                                ((myModMask .|. mod1Mask, xK_j), sendMessage $ ExpandTowards D),
-                                ((myModMask .|. mod1Mask, xK_k), sendMessage $ ExpandTowards U),
-                                ((myModMask .|. mod1Mask .|. controlMask, xK_l), sendMessage $ ShrinkFrom R),
-                                ((myModMask .|. mod1Mask .|. controlMask, xK_h), sendMessage $ ShrinkFrom L),
-                                ((myModMask .|. mod1Mask .|. controlMask, xK_j), sendMessage $ ShrinkFrom D),
-                                ((myModMask .|. mod1Mask .|. controlMask, xK_k), sendMessage $ ShrinkFrom U),
-                                ((myModMask .|. mod1Mask, xK_r), sendMessage Rotate),
-                                ((myModMask .|. mod1Mask, xK_s), sendMessage Swap),
-                                ((myModMask .|. mod1Mask, xK_n), sendMessage FocusParent),
-                                ((myModMask .|. controlMask, xK_n), sendMessage SelectNode),
-                                ((myModMask .|. shiftMask, xK_n), sendMessage MoveNode),
-                                ((myModMask .|. shiftMask .|. controlMask, xK_j), sendMessage $ SplitShift Prev),
-                                ((myModMask .|. shiftMask .|. controlMask, xK_k), sendMessage $ SplitShift Next),
-                                ((myModMask, xK_a), sendMessage Balance),
-                                ((myModMask .|. mod1Mask, xK_a), sendMessage Equalize)
+                                ((myModMask, xK_b), spawn "$HOME/.config/xmonad/scripts/bars.sh")
                               ]
                        )
 
@@ -251,7 +218,7 @@ polybarLogHook dbus =
        in show (42 + x)
     hideNsp mapper name = if name == "NSP" then "" else mapper name
 
-myLayout _ = smartBorders $ mkToggle (NOBORDERS ?? FULL ?? EOT) $ maximize $ borderResize $ smartSpacing 0 $ desktopLayoutModifiers (Tall 1 (1 / 100) (1 / 2) ||| Mirror (Tall 1 (1 / 100) (1 / 2)) ||| spiral (6 / 7) ||| ThreeColMid 1 (1 / 100) (1 / 2) ||| tabbedAlways shrinkText myTabConfig ||| emptyBSP)
+myLayout _ = smartBorders $ mkToggle (NOBORDERS ?? FULL ?? EOT) $ maximize $ borderResize $ smartSpacing 0 $ desktopLayoutModifiers (Tall 1 (1 / 100) (1 / 2) ||| Mirror (Tall 1 (1 / 100) (1 / 2)) ||| spiral (6 / 7) ||| ThreeColMid 1 (1 / 100) (1 / 2) ||| tabbedAlways shrinkText myTabConfig)
 
 myTabConfig =
   def
