@@ -94,7 +94,6 @@ import XMonad.Hooks.ManageHelpers
     isFullscreen,
   )
 import XMonad.Hooks.ServerMode (serverModeEventHook')
-import XMonad.Hooks.SetWMName (setWMName)
 import XMonad.Layout.BinarySpacePartition
   (
     FocusParent (FocusParent),
