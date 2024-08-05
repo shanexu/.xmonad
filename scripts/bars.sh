@@ -4,7 +4,8 @@ pkill polybar
 pkill stalonetray
 pkill xfce4-panel
 
-autorandr -c
+# autorandr -c
+# xrandr --output HDMI-0 --scale 1.3333
 
 while true; do
     output=$(xrandr --current)
@@ -14,6 +15,16 @@ while true; do
         command=$'polybar -r topbar &\nxfce4-panel --disable-wm-check &\n'
         break
     elif echo "$output"  | grep -q 'DP-2 connected primary 5120x2880+0+0 (normal left inverted right x axis y axis) 609mm x 349mm'
+    then
+        export POLYBAR_DPI=192
+        command=$'polybar -r topbar &\nxfce4-panel --disable-wm-check &\n'
+        break
+    elif echo "$output"  | grep -q 'HDMI-0 connected primary 5120x2880+0+0 (normal left inverted right x axis y axis) 597mm x 335mm'
+    then
+        export POLYBAR_DPI=192
+        command=$'polybar -r topbar &\nxfce4-panel --disable-wm-check &\n'
+        break
+    elif echo "$output"  | grep -q 'DP-2 connected primary 5120x2880+0+0 (normal left inverted right x axis y axis) 597mm x 335mm'
     then
         export POLYBAR_DPI=192
         command=$'polybar -r topbar &\nxfce4-panel --disable-wm-check &\n'
