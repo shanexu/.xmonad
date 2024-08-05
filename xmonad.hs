@@ -146,7 +146,8 @@ main = do
     $ (myDesktopConfig desktopSession)
       { modMask = myModMask,
         logHook = dynamicLogWithPP (polybarLogHook dbus) <+> logHook (myDesktopConfig desktopSession),
-        terminal = "tabbed -n tabbed-alacritty -c alacritty --embed",
+        -- terminal = "tabbed -n tabbed-alacritty -c alacritty --embed",
+        terminal = "kitty",
         workspaces = myWorkspaces,
         borderWidth = myBorderWidth hostname,
         focusFollowsMouse = True,
