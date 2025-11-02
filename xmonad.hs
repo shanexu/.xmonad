@@ -7,6 +7,7 @@ import Text.Read (readMaybe)
 import XMonad
   ( Mirror (Mirror),
     Tall (Tall),
+    Full (Full),
     XConfig (borderWidth, focusFollowsMouse, focusedBorderColor, handleEventHook, layoutHook, logHook, manageHook, modMask, normalBorderColor, startupHook, terminal, workspaces),
     appName,
     className,
@@ -102,7 +103,7 @@ import XMonad.Layout.Spacing (smartSpacing)
 import XMonad.Layout.Spiral (spiral)
 import XMonad.Layout.Tabbed
   ( shrinkText,
-    tabbedAlways,
+    tabbedBottomAlways,
   )
 import XMonad.Layout.Decoration
   ( activeBorderColor,
@@ -146,8 +147,8 @@ main = do
     $ (myDesktopConfig desktopSession)
       { modMask = myModMask,
         logHook = dynamicLogWithPP (polybarLogHook dbus) <+> logHook (myDesktopConfig desktopSession),
-        -- terminal = "tabbed -n tabbed-alacritty -c alacritty --embed",
-        terminal = "kitty",
+        terminal = "tabbed -n tabbed-alacritty -c alacritty --embed",
+        -- terminal = "kitty",
         workspaces = myWorkspaces,
         borderWidth = myBorderWidth hostname,
         focusFollowsMouse = True,
@@ -175,17 +176,17 @@ main = do
                                 ((myModMask, xK_p), spawn "rofi -combi-modi window,drun,run -show combi -show-icons -dpi 144"),
                                 ((myModMask, xK_c), spawn "rofi -show calc -modi calc -no-show-match -no-sort -dpi 144"),
                                 ((myModMask .|. shiftMask, xK_p), spawn "rofi -show window -show-icons -dpi 144"),
-                                ((myModMask, xK_x), spawn "QT_AUTO_SCREEN_SCALE_FACTOR=0 flameshot full -c"),
-                                ((myModMask .|. shiftMask, xK_x), spawn "QT_AUTO_SCREEN_SCALE_FACTOR=0 flameshot gui"),
+                                -- ((myModMask, xK_x), spawn "QT_AUTO_SCREEN_SCALE_FACTOR=0 flameshot full -c"),
+                                -- ((myModMask .|. shiftMask, xK_x), spawn "QT_AUTO_SCREEN_SCALE_FACTOR=0 flameshot gui"),
                                 ((myModMask .|. shiftMask, xK_v), spawn "copyq toggle"),
                                 ((myModMask, xK_backslash), spawn "1password --quick-access"),
                                 ((mod1Mask .|. controlMask, xK_l), spawn $ if desktopSession == "xfce" then "xflock4" else "dbus-send --type=method_call --dest=org.gnome.ScreenSaver /org/gnome/ScreenSaver org.gnome.ScreenSaver.Lock"),
                                 ((myModMask, xK_m), sendMessage $ Toggle FULL),
                                 ((myModMask .|. shiftMask, xK_m), withFocused (sendMessage . maximizeRestore)),
                                 ((myModMask, xK_z), spawn "autorandr -c"),
-                                ((myModMask .|. controlMask, xK_t), namedScratchpadAction scratchpads "dropDownTerminal"),
-                                ((myModMask .|. controlMask, xK_c), namedScratchpadAction scratchpads "chatbox"),
-                                ((myModMask, xK_b), spawn "$HOME/.config/xmonad/scripts/bars.sh")
+                                ((myModMask .|. controlMask, xK_t), namedScratchpadAction scratchpads "dropDownTerminal")
+                                -- ((myModMask .|. controlMask, xK_c), namedScratchpadAction scratchpads "chatbox")
+                                -- ((myModMask, xK_b), spawn "$HOME/.config/xmonad/scripts/bars.sh")
                               ]
                        )
 
@@ -213,18 +214,18 @@ polybarLogHook dbus =
        in show (42 + x)
     hideNsp mapper name = if name == "NSP" then "" else mapper name
 
-myLayout _ = smartBorders $ mkToggle (NOBORDERS ?? FULL ?? EOT) $ maximize $ borderResize $ smartSpacing 0 $ desktopLayoutModifiers (Tall 1 (1 / 100) (1 / 2) ||| Mirror (Tall 1 (1 / 100) (1 / 2)) ||| spiral (6 / 7) ||| ThreeColMid 1 (1 / 100) (1 / 2) ||| tabbedAlways shrinkText myTabConfig)
+myLayout _ = smartBorders $ mkToggle (NOBORDERS ?? FULL ?? EOT) $ maximize $ borderResize $ smartSpacing 6 $ desktopLayoutModifiers (Tall 1 (1 / 100) (1 / 2) ||| Mirror (Tall 1 (1 / 100) (1 / 2)) ||| spiral (6 / 7) ||| ThreeColMid 1 (1 / 100) (1 / 2) ||| tabbedBottomAlways shrinkText myTabConfig ||| Full)
 
 myTabConfig =
   def
-    { inactiveBorderColor = "#202030",
-      activeBorderColor = "#a0a0d0",
-      inactiveColor = "#000000",
-      activeColor = "#000000",
-      inactiveTextColor = "#607070",
-      activeTextColor = "#a0d0d0",
-      decoHeight = 42,
-      fontName = "xft:Monospace-10,LXGW Neo XiHei Screen Full:size=10,Noto Sans CJK KR:size=10"
+    { inactiveBorderColor = "#1a1a1a",      -- 纯黑色边框
+      activeBorderColor   = "#1793d1",      -- Arch 蓝色作为强调色
+      inactiveColor       = "#2d2d2d",      -- 深灰色背景
+      activeColor         = "#1a1a1a",      -- 黑色背景
+      inactiveTextColor   = "#666666",      -- 中灰色文字
+      activeTextColor     = "#1793d1",      -- 蓝色活动文字
+      decoHeight          = 42,
+      fontName            = "xft:Maple Mono NF CN:size=10"
     }
 
 -- myLauncher = "$($HOME/.cabal/bin/yeganesh -x -- -fn 'Monoid-8' -b)"
@@ -234,12 +235,18 @@ myModMask = mod4Mask
 myStartupHook _ desktopSession = do
   startupHook (myDesktopConfig desktopSession)
   -- setWMName "LG3D"
-  spawnOnce "$HOME/.config/xmonad/scripts/bars.sh"
+  spawnOnce "$HOME/.config/xmonad/scripts/ay-night-switcherd.sh"
+  -- spawnOnce "$HOME/.config/xmonad/scripts/bars.sh"
+  spawnOnce "pkill gnome-panel"
+  spawnOnce "xfce4-panel -d"
+  spawnOnce "$HOME/src/github.com/shanexu/simple-xmonad-layout/simple-xmonad-layout"
+  spawnOnce "picom"
+  spawnOnce "autorandr -c"
 
 scratchpads =
-  [ -- NS "dropDownTerminal" "tabbed -c -n Drop-Down-Terminal alacritty -o window.opacity=0.80 --embed" (appName =? "Drop-Down-Terminal") (customFloating $ W.RationalRect (1 / 8) (0 / 6) (3 / 4) (2 / 3)),
-    NS "dropDownTerminal" "kitty --name Drop-Down-Terminal -o background_opacity=0.80" (appName =? "Drop-Down-Terminal") (customFloating $ W.RationalRect (1 / 8) (0 / 6) (3 / 4) (2 / 3)),
-    NS "chatbox" "Chatbox" (appName =? "xyz.chatboxapp.app") (customFloating $ W.RationalRect (1 / 8) (0 / 6) (3 / 4) (2 / 3))
+  [ NS "dropDownTerminal" "tabbed -c -n Drop-Down-Terminal alacritty -o window.opacity=0.80 --embed" (appName =? "Drop-Down-Terminal") (customFloating $ W.RationalRect (1 / 8) (0 / 6) (3 / 4) (2 / 3))
+    -- NS "dropDownTerminal" "kitty --name Drop-Down-Terminal -o background_opacity=0.80" (appName =? "Drop-Down-Terminal") (customFloating $ W.RationalRect (1 / 8) (0 / 6) (3 / 4) (2 / 3)),
+    -- NS "chatbox" "Chatbox" (appName =? "xyz.chatboxapp.app") (customFloating $ W.RationalRect (1 / 8) (0 / 6) (3 / 4) (2 / 3))
   ]
 
 myManageHook =
@@ -266,7 +273,9 @@ myManageHook =
         className =? "Xfce4-notifyd" --> doIgnore,
         className =? "Wrapper-2.0" --> doFloat,
         className =? "ToDesk" --> doFloat,
-        title =? "com.alibabainc.dingtalk" <&&> className =? "com.alibabainc.dingtalk" --> doFloat >> placeHook (inBounds (underMouse (0, 0)))
+        title =? "com.alibabainc.dingtalk" <&&> className =? "com.alibabainc.dingtalk" --> doFloat >> placeHook (inBounds (underMouse (0, 0))),
+        -- className =? "Feishu" --> doFloat,
+        className =? "Meeting" --> doFloat
       ]
 
 myWorkspaces = miscs 9 ++ ["0"]
