@@ -52,7 +52,7 @@ import XMonad
     (<&&>),
     (<+>),
     (=?),
-    (|||),
+    (|||), stringProperty,
   )
 import XMonad.Actions.Commands (defaultCommands)
 import XMonad.Actions.CopyWindow (copyToAll)
@@ -274,7 +274,9 @@ myManageHook =
         className =? "Wrapper-2.0" --> doFloat,
         className =? "ToDesk" --> doFloat,
         title =? "com.alibabainc.dingtalk" <&&> className =? "com.alibabainc.dingtalk" --> doFloat >> placeHook (inBounds (underMouse (0, 0))),
-        -- className =? "Feishu" --> doFloat,
+        -- 飞书相关
+        title =? "飞书会议" --> doFloat,
+        title =? "" <&&> stringProperty "WM_WINDOW_ROLE" =? "bubble" --> doFloat,
         className =? "Meeting" --> doFloat
       ]
 
