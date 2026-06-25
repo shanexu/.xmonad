@@ -280,9 +280,7 @@ myManageHook =
         className =? "Meeting" --> doFloat
       ]
 
-myWorkspaces = miscs 9 ++ ["0"]
-  where
-    miscs = map (("" ++) . show :: Int -> String) . flip take [1 ..]
+myWorkspaces = map show [1 .. 9 :: Int] ++ ["0"]
 
 myExtraWorkspaces = [(xK_0, "0")]
 
