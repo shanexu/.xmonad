@@ -1,6 +1,6 @@
 cabal-version: 2.2
 
--- This file has been generated from package.yaml by hpack version 0.36.0.
+-- This file has been generated from package.yaml by hpack version 0.39.6.
 --
 -- see: https://github.com/sol/hpack
 
@@ -34,12 +34,12 @@ library
       X11 ==1.10.*
     , base >=4.7 && <5
     , binary ==0.8.*
-    , dbus ==1.3.*
+    , dbus >=1.3 && <1.5
     , directory ==1.3.*
     , hostname >=1.0 && <2.0
     , text ==2.1.*
-    , xmonad ==0.18.0
-    , xmonad-contrib ==0.18.0
+    , xmonad ==0.18.*
+    , xmonad-contrib ==0.18.*
   default-language: Haskell2010
 
 executable myxmonad
@@ -55,7 +55,7 @@ executable myxmonad
       X11 ==1.10.*
     , base >=4.7 && <5
     , binary ==0.8.*
-    , dbus ==1.3.*
+    , dbus >=1.3 && <1.5
     , directory ==1.3.*
     , hostname >=1.0 && <2.0
     , myxmonad
@@ -78,7 +78,7 @@ executable xmonadctl
       X11 ==1.10.*
     , base >=4.7 && <5
     , binary ==0.8.*
-    , dbus ==1.3.*
+    , dbus >=1.3 && <1.5
     , directory ==1.3.*
     , hostname >=1.0 && <2.0
     , myxmonad
