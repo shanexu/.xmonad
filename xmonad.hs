@@ -86,6 +86,9 @@ main = do
   hostname <- getHostName
   dbus <- D.connect
   _ <- D.requestAccess dbus
+  let rofi args = spawn $ "rofi " ++ args ++ " -dpi 144"
+      screenAction f sc = screenWorkspace sc >>= flip whenJust (windows . f)
+      lockCmd = if desktopSession == "xfce" then "xflock4" else "dbus-send --type=method_call --dest=org.gnome.ScreenSaver /org/gnome/ScreenSaver org.gnome.ScreenSaver.Lock"
   xmonad
     $ N2D.navigation2D
       def
@@ -103,7 +106,7 @@ main = do
         workspaces = myWorkspaces,
         borderWidth = myBorderWidth hostname,
         focusFollowsMouse = True,
-        layoutHook = myLayout desktopSession,
+        layoutHook = myLayout,
         normalBorderColor = "#555555",
         focusedBorderColor = "#f36864",
         handleEventHook =
@@ -119,19 +122,19 @@ main = do
       }
       `additionalKeys` ( [((myModMask, key), windows $ W.greedyView ws) | (key, ws) <- myExtraWorkspaces]
                            ++ [((myModMask .|. shiftMask, key), windows $ W.shift ws) | (key, ws) <- myExtraWorkspaces]
-                           ++ [ ((m .|. myModMask, key), screenWorkspace sc >>= flip whenJust (windows . f)) -- Replace 'mod1Mask' with your mod key of choice.
-                                | (key, sc) <- zip [xK_w, xK_e, xK_r] [2, 0, 1], -- was [0..] *** change to match your screen order ***
+                           ++ [ ((m .|. myModMask, key), screenAction f sc)
+                                | (key, sc) <- zip [xK_w, xK_e, xK_r] [2, 0, 1],
                                   (f, m) <- [(W.view, 0), (W.shift, shiftMask)]
                               ]
                            ++ [ ((myModMask, xK_g), withFocused toggleBorder),
-                                ((myModMask, xK_p), spawn "rofi -combi-modi window,drun,run -show combi -show-icons -dpi 144"),
-                                ((myModMask, xK_c), spawn "rofi -show calc -modi calc -no-show-match -no-sort -dpi 144"),
-                                ((myModMask .|. shiftMask, xK_p), spawn "rofi -show window -show-icons -dpi 144"),
+                                ((myModMask, xK_p), rofi "-combi-modi window,drun,run -show combi -show-icons"),
+                                ((myModMask, xK_c), rofi "-show calc -modi calc -no-show-match -no-sort"),
+                                ((myModMask .|. shiftMask, xK_p), rofi "-show window -show-icons"),
                                 -- ((myModMask, xK_x), spawn "QT_AUTO_SCREEN_SCALE_FACTOR=0 flameshot full -c"),
                                 -- ((myModMask .|. shiftMask, xK_x), spawn "QT_AUTO_SCREEN_SCALE_FACTOR=0 flameshot gui"),
                                 ((myModMask .|. shiftMask, xK_v), spawn "copyq toggle"),
                                 ((myModMask, xK_backslash), spawn "1password --quick-access"),
-                                ((mod1Mask .|. controlMask, xK_l), spawn $ if desktopSession == "xfce" then "xflock4" else "dbus-send --type=method_call --dest=org.gnome.ScreenSaver /org/gnome/ScreenSaver org.gnome.ScreenSaver.Lock"),
+                                ((mod1Mask .|. controlMask, xK_l), spawn lockCmd),
                                 ((myModMask, xK_m), sendMessage $ Toggle FULL),
                                 ((myModMask .|. shiftMask, xK_m), withFocused (sendMessage . maximizeRestore)),
                                 ((myModMask, xK_z), spawn "autorandr -c"),
@@ -155,17 +158,23 @@ polybarLogHook dbus =
       ppOutput = D.send dbus
     }
   where
-    nameToCmdNo name =
-      let x =
-            ( case readMaybe name of
-                Just n -> (n - 1) `mod` 10
-                Nothing -> 0
-            ) ::
-              Int
-       in show (42 + x)
+    nameToCmdNo name = show $ 42 + maybe 0 ((`mod` 10) . subtract 1) (readMaybe name)
     hideNsp mapper name = if name == "NSP" then "" else mapper name
 
-myLayout _ = smartBorders $ mkToggle (NOBORDERS ?? FULL ?? EOT) $ maximize $ borderResize $ smartSpacing 6 $ desktopLayoutModifiers (Tall 1 (1 / 100) (1 / 2) ||| Mirror (Tall 1 (1 / 100) (1 / 2)) ||| spiral (6 / 7) ||| ThreeColMid 1 (1 / 100) (1 / 2) ||| tabbedBottomAlways shrinkText myTabConfig ||| Full)
+myLayout =
+  smartBorders
+    $ mkToggle (NOBORDERS ?? FULL ?? EOT)
+    $ maximize
+    $ borderResize
+    $ smartSpacing 6
+    $ desktopLayoutModifiers
+      ( Tall 1 (1 / 100) (1 / 2)
+          ||| Mirror (Tall 1 (1 / 100) (1 / 2))
+          ||| spiral (6 / 7)
+          ||| ThreeColMid 1 (1 / 100) (1 / 2)
+          ||| tabbedBottomAlways shrinkText myTabConfig
+          ||| Full
+      )
 
 myTabConfig =
   def
