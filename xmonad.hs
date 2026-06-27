@@ -158,7 +158,7 @@ polybarLogHook dbus =
       ppOutput = D.send dbus
     }
   where
-    nameToCmdNo name = show $ 42 + maybe 0 ((`mod` 10) . subtract 1) (readMaybe name)
+    nameToCmdNo name = show $ (42 :: Int) + maybe 0 ((`mod` 10) . subtract 1) (readMaybe name)
     hideNsp mapper name = if name == "NSP" then "" else mapper name
 
 myLayout =
