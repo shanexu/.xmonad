@@ -205,7 +205,7 @@ myStartupHook _ desktopSession = do
 
 scratchpads =
   [ -- NS "dropDownTerminal" "tabbed -c -n Drop-Down-Terminal alacritty -o window.opacity=0.80 --embed" (appName =? "Drop-Down-Terminal") (customFloating $ W.RationalRect (1 / 8) (0 / 6) (3 / 4) (2 / 3))
-    NS "dropDownTerminal" "kitty --name Drop-Down-Terminal -o background_opacity=0.80" (appName =? "Drop-Down-Terminal") (customFloating $ W.RationalRect (1 / 8) (0 / 6) (3 / 4) (2 / 3)),
+    NS "dropDownTerminal" "kitty --name Drop-Down-Terminal -o background_opacity=0.80" (appName =? "Drop-Down-Terminal") (customFloating $ W.RationalRect (1 / 8) (0 / 6) (3 / 4) (2 / 3))
     -- NS "chatbox" "Chatbox" (appName =? "xyz.chatboxapp.app") (customFloating $ W.RationalRect (1 / 8) (0 / 6) (3 / 4) (2 / 3))
   ]
 
